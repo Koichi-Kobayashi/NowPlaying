@@ -44,14 +44,6 @@ public partial class DashboardViewModel : ObservableObject
     [RelayCommand]
     private void Share()
     {
-        var window = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive) ?? Application.Current.MainWindow;
-        if (window != null)
-        {
-            _shareService.ShareViaWindows(CurrentTrack, window);
-        }
-        else
-        {
-            _shareService.FallbackToXUrl(CurrentTrack);
-        }
+        _shareService.ShareViaWebView2(CurrentTrack);
     }
 }

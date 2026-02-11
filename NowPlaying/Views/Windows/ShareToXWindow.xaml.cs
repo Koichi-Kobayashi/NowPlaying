@@ -1,0 +1,96 @@
+using System.Runtime.InteropServices;
+using System.Windows;
+using Wpf.Ui.Controls;
+
+namespace NowPlaying.Views.Windows;
+
+public partial class ShareToXWindow : FluentWindow
+{
+    private readonly string _url;
+    private readonly bool _hasAlbumArtwork;
+
+    private const int VK_CONTROL = 0x11;
+    private const int VK_V = 0x56;
+    private const int KEYEVENTF_KEYUP = 0x02;
+
+    [DllImport("user32.dll")]
+    private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
+
+    public ShareToXWindow(string url, bool hasAlbumArtwork = false)
+    {
+        _url = url;
+        _hasAlbumArtwork = hasAlbumArtwork;
+        InitializeComponent();
+        Loaded += OnLoaded;
+    }
+
+    private async void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        Loaded -= OnLoaded;
+        WebView.Source = new Uri(_url);
+
+        if (_hasAlbumArtwork)
+        {
+            WebView.NavigationCompleted += OnNavigationCompleted;
+        }
+    }
+
+    private async void OnNavigationCompleted(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+    {
+        if (sender is not Microsoft.Web.WebView2.Wpf.WebView2 wv || !_hasAlbumArtwork)
+            return;
+
+        wv.NavigationCompleted -= OnNavigationCompleted;
+
+        try
+        {
+            await Task.Delay(2500);
+
+            var coreWebView2 = wv.CoreWebView2;
+            if (coreWebView2 == null) return;
+
+            await Dispatcher.InvokeAsync(() =>
+            {
+                wv.Focus();
+                Activate();
+            });
+            await Task.Delay(300);
+
+            var focusScript = @"
+                (function() {
+                    var sel = document.querySelector('[data-testid=""tweetTextarea_0""]') ||
+                             document.querySelector('[data-testid=""tweetTextarea""]') ||
+                             document.querySelector('div[contenteditable=""true""][role=""textbox""]') ||
+                             document.querySelector('div[contenteditable=""true""]');
+                    if (sel) {
+                        sel.focus();
+                        sel.click();
+                        return true;
+                    }
+                    return false;
+                })();
+            ";
+            await coreWebView2.ExecuteScriptAsync(focusScript);
+            await Task.Delay(300);
+
+            await Dispatcher.InvokeAsync(() =>
+            {
+                Activate();
+                wv.Focus();
+                SendPasteKeys();
+            });
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Auto-paste error: {ex.Message}");
+        }
+    }
+
+    private void SendPasteKeys()
+    {
+        keybd_event((byte)VK_CONTROL, 0, 0, 0);
+        keybd_event((byte)VK_V, 0, 0, 0);
+        keybd_event((byte)VK_V, 0, KEYEVENTF_KEYUP, 0);
+        keybd_event((byte)VK_CONTROL, 0, KEYEVENTF_KEYUP, 0);
+    }
+}

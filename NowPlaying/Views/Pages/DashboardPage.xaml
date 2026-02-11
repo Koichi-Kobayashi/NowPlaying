@@ -9,8 +9,8 @@
   Title="Now Playing"
   d:DataContext="{d:DesignInstance local:DashboardPage,
                                    IsDesignTimeCreatable=False}"
-  d:DesignHeight="450"
-  d:DesignWidth="800"
+  d:DesignHeight="740"
+  d:DesignWidth="640"
   ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
   ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -26,8 +26,8 @@
     <!--  アルバムアートワーク  -->
     <Border
       Grid.Row="0"
-      Width="200"
-      Height="200"
+      Width="400"
+      Height="400"
       Margin="0,0,0,24"
       Background="{DynamicResource ControlFillColorDefaultBrush}"
       CornerRadius="8">
@@ -40,8 +40,8 @@
       </Border.Effect>
       <Grid>
         <Image
-          Width="200"
-          Height="200"
+          Width="400"
+          Height="400"
           Source="{Binding ViewModel.CurrentTrack.AlbumArtwork, Mode=OneWay}"
           Stretch="UniformToFill">
           <Image.Style>
@@ -56,8 +56,8 @@
           </Image.Style>
         </Image>
         <ui:SymbolIcon
-          Width="80"
-          Height="80"
+          Width="160"
+          Height="160"
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
           Foreground="{DynamicResource TextFillColorTertiaryBrush}"

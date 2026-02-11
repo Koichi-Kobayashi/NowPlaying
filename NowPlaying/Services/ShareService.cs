@@ -125,13 +125,35 @@ public class ShareService
     }
 
     /// <summary>
-    /// Xの投稿画面をブラウザで開く
+    /// WebView2でXの投稿画面を開く（アルバムアートはクリップボードにコピーされ、Ctrl+Vで貼り付け可能）
+    /// </summary>
+    public void ShareViaWebView2(NowPlayingTrack track)
+    {
+        // アルバムアートをクリップボードにコピー
+        if (track.AlbumArtwork is BitmapSource bitmap)
+        {
+            try
+            {
+                System.Windows.Clipboard.SetImage(bitmap);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Clipboard copy error: {ex.Message}");
+            }
+        }
+
+        var url = BuildXIntentUrl(track);
+        var hasAlbumArtwork = track.AlbumArtwork != null;
+        var window = new Views.Windows.ShareToXWindow(url, hasAlbumArtwork);
+        window.Show();
+    }
+
+    /// <summary>
+    /// Xの投稿画面を外部ブラウザで開く
     /// </summary>
     public void FallbackToXUrl(NowPlayingTrack track)
     {
-        var text = BuildShareText(track);
-        var encoded = Uri.EscapeDataString(text);
-        var url = $"https://x.com/intent/tweet?text={encoded}";
+        var url = BuildXIntentUrl(track);
 
         try
         {
@@ -151,5 +173,12 @@ public class ShareService
     {
         if (track.IsEmpty) return "現在再生中の曲がありません #NowPlaying";
         return $"Now Playing: {track.Title} - {track.Artist} #NowPlaying";
+    }
+
+    private static string BuildXIntentUrl(NowPlayingTrack track)
+    {
+        var text = BuildShareText(track);
+        var encoded = Uri.EscapeDataString(text);
+        return $"https://x.com/intent/tweet?text={encoded}";
     }
 }
