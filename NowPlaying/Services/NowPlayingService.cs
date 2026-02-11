@@ -1,5 +1,6 @@
 using System.IO;
 using System.Windows;
+using System.Windows.Threading;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -19,6 +20,7 @@ public partial class NowPlayingService : ObservableObject
 
     private GlobalSystemMediaTransportControlsSessionManager? _sessionManager;
     private GlobalSystemMediaTransportControlsSession? _currentSession;
+    private DispatcherTimer? _pollTimer;
 
     public event EventHandler? CurrentTrackChanged;
 
@@ -31,6 +33,13 @@ public partial class NowPlayingService : ObservableObject
             _sessionManager.CurrentSessionChanged += OnCurrentSessionChanged;
 
             await UpdateFromCurrentSessionAsync();
+
+            _pollTimer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher)
+            {
+                Interval = TimeSpan.FromSeconds(3)
+            };
+            _pollTimer.Tick += (_, _) => _ = UpdateFromCurrentSessionAsync();
+            _pollTimer.Start();
         }
         catch (Exception ex)
         {

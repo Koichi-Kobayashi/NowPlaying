@@ -26,7 +26,9 @@ namespace NowPlaying
         // https://docs.microsoft.com/dotnet/core/extensions/logging
         private static readonly IHost _host = Host
             .CreateDefaultBuilder()
+#pragma warning disable CS8604 // Null 参照引数の可能性があります。
             .ConfigureAppConfiguration(c => { c.SetBasePath(Path.GetDirectoryName(AppContext.BaseDirectory)); })
+#pragma warning restore CS8604 // Null 参照引数の可能性があります。
             .ConfigureServices((context, services) =>
             {
                 services.AddNavigationViewPageProvider();
