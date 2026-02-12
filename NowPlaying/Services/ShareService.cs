@@ -134,7 +134,9 @@ public class ShareService
     /// <summary>
     /// WebView2でXの投稿画面を開く（アルバムアートはクリップボードにコピーされ、Ctrl+Vで貼り付け可能）
     /// </summary>
-    public void ShareViaWebView2(NowPlayingTrack track)
+    /// <param name="track">共有するトラック</param>
+    /// <param name="isAutoPost">自動ポストによる呼び出しの場合true。ウィンドウを閉じるのは自動ポスト時のみ。</param>
+    public void ShareViaWebView2(NowPlayingTrack track, bool isAutoPost = false)
     {
         var postAlbumArtwork = _appSettingsService.PostAlbumArtwork;
 
@@ -153,7 +155,7 @@ public class ShareService
 
         var url = BuildXIntentUrl(track);
         var hasAlbumArtwork = postAlbumArtwork && track.AlbumArtwork != null;
-        var autoClose = _appSettingsService.AutoCloseShareWindow;
+        var autoClose = isAutoPost && _appSettingsService.AutoCloseShareWindow;
         var window = new Views.Windows.ShareToXWindow(url, hasAlbumArtwork, autoClose);
         window.Closed += (_, _) => _appSettingsService.MarkShareSucceeded();
         window.Show();

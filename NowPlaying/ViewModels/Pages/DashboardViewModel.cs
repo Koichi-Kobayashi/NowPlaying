@@ -56,7 +56,7 @@ public partial class DashboardViewModel : ObservableObject
 
         _lastAutoPostedArtist = track.Artist;
         _lastAutoPostedTitle = track.Title;
-        _shareService.ShareViaWebView2(track);
+        _shareService.ShareViaWebView2(track, isAutoPost: true);
     }
 
     [RelayCommand]

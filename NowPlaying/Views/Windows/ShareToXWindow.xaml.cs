@@ -95,9 +95,12 @@ public partial class ShareToXWindow : FluentWindow
             var clickResult = await coreWebView2.ExecuteScriptAsync(clickPostScript);
             await Task.Delay(2000);
 
-            // 「自動で閉じる」がオンで、投稿ボタンのクリックに成功した場合のみ閉じる（ログインページにいる場合は閉じない）
-            var postSucceeded = clickResult?.Trim('"') == "true";
-            if (_autoClose && postSucceeded)
+            // 「自動で閉じる」がオンで、投稿ボタンのクリックに成功した場合のみ閉じる
+            // ログインページ（URLに login 含む）の場合は閉じない
+            var postSucceeded = clickResult?.Trim().Trim('"') == "true";
+            var currentUrl = coreWebView2.Source?.ToString() ?? "";
+            var isLoginPage = currentUrl.Contains("login", StringComparison.OrdinalIgnoreCase);
+            if (_autoClose && postSucceeded && !isLoginPage)
                 await Dispatcher.InvokeAsync(Close);
         }
         catch (Exception ex)
