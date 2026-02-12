@@ -185,7 +185,8 @@ public class ShareService
         var main = $"Now Playing: {track.Title} - {track.Artist}";
         if (!string.IsNullOrWhiteSpace(track.AlbumTitle))
             main += $" - {track.AlbumTitle}";
-        return $"{main} #NowPlaying";
+        var timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm");
+        return $"{main} #NowPlaying ({timestamp})";
     }
 
     private static string BuildXIntentUrl(NowPlayingTrack track)
