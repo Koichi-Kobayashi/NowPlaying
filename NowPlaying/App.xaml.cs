@@ -47,6 +47,7 @@ namespace NowPlaying
                 // Main window with navigation
                 services.AddSingleton<INavigationWindow, MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();
+                services.AddSingleton<WindowStateService>();
 
                 services.AddSingleton<NowPlayingService>();
                 services.AddSingleton<ShareService>();

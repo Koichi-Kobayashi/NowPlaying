@@ -1,5 +1,7 @@
 using System.Windows;
 using System.Windows.Media;
+using NowPlaying.Models;
+using NowPlaying.Services;
 using NowPlaying.ViewModels.Windows;
 using NowPlaying.Views.Pages;
 using Wpf.Ui;
@@ -11,20 +13,25 @@ namespace NowPlaying.Views.Windows
 {
     public partial class MainWindow : INavigationWindow
     {
-        private const double MiniWidth = 520;
-        private const double MiniHeight = 340;
+        private const double MiniWidth = 640;
+        private const double MiniHeight = 280;
         private const double NormalWidth = 640;
         private const double NormalHeight = 640;
         public MainWindowViewModel ViewModel { get; }
 
+        private readonly WindowStateService _windowStateService;
+        private bool _isRestoringState;
+
         public MainWindow(
             MainWindowViewModel viewModel,
             INavigationViewPageProvider navigationViewPageProvider,
-            INavigationService navigationService
+            INavigationService navigationService,
+            WindowStateService windowStateService
         )
         {
             ViewModel = viewModel;
             DataContext = this;
+            _windowStateService = windowStateService;
 
             SystemThemeWatcher.Watch(this);
 
@@ -34,6 +41,52 @@ namespace NowPlaying.Views.Windows
             navigationService.SetNavigationControl(RootNavigation);
 
             RootNavigation.Navigated += RootNavigation_OnNavigated;
+            Closing += MainWindow_Closing;
+        }
+
+        /// <summary>
+        /// 保存されたウィンドウ状態を復元し、表示するページの型を返します。
+        /// </summary>
+        public Type RestoreState()
+        {
+            var state = _windowStateService.Load();
+            if (state == null)
+                return typeof(DashboardPage);
+
+            _isRestoringState = true;
+            WindowStartupLocation = WindowStartupLocation.Manual;
+
+            Left = state.Left;
+            Top = state.Top;
+            Width = state.Width;
+            Height = state.Height;
+
+            if (state.IsMiniPlayer)
+            {
+                MinWidth = MiniWidth;
+                MinHeight = MiniHeight;
+                return typeof(MiniPlayerPage);
+            }
+            else
+            {
+                MinWidth = 0;
+                MinHeight = 0;
+                return typeof(DashboardPage);
+            }
+        }
+
+        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var isMiniPlayer = FindChild<MiniPlayerPage>(RootNavigation) != null;
+            var state = new Models.WindowState
+            {
+                Width = Width,
+                Height = Height,
+                Left = Left,
+                Top = Top,
+                IsMiniPlayer = isMiniPlayer
+            };
+            _windowStateService.Save(state);
         }
 
         private void RootNavigation_OnNavigated(object sender, RoutedEventArgs e)
@@ -41,12 +94,19 @@ namespace NowPlaying.Views.Windows
             // ナビゲーション後にページがツリーに追加されるのを待つ
             Dispatcher.BeginInvoke(() =>
             {
+                // 復元中はサイズを変更しない（保存された値を維持）
+                if (_isRestoringState)
+                {
+                    _isRestoringState = false;
+                    return;
+                }
+
                 var isMiniPlayer = FindChild<MiniPlayerPage>(RootNavigation) != null;
 
                 if (isMiniPlayer)
                 {
                     Width = MiniWidth;
-                Height = MiniHeight;
+                    Height = MiniHeight;
                     MinWidth = MiniWidth;
                     MinHeight = MiniHeight;
                 }

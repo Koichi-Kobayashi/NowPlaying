@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NowPlaying.Views.Pages;
 using NowPlaying.Views.Windows;
@@ -45,12 +45,14 @@ namespace NowPlaying.Services
         {
             if (!Application.Current.Windows.OfType<MainWindow>().Any())
             {
-                _navigationWindow = (
-                    _serviceProvider.GetService(typeof(INavigationWindow)) as INavigationWindow
-                )!;
-                _navigationWindow!.ShowWindow();
+                var mainWindow = _serviceProvider.GetService(typeof(INavigationWindow)) as MainWindow;
+                _navigationWindow = mainWindow!;
 
-                _navigationWindow.Navigate(typeof(Views.Pages.DashboardPage));
+                // 保存された状態を復元して表示するページを取得
+                var pageType = mainWindow!.RestoreState();
+
+                mainWindow.ShowWindow();
+                _navigationWindow.Navigate(pageType);
             }
 
             await Task.CompletedTask;
