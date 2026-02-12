@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using Wpf.Ui.Controls;
 
 namespace NowPlaying.ViewModels.Windows
@@ -16,6 +16,12 @@ namespace NowPlaying.ViewModels.Windows
                 Content = "NowPlaying",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Home24 },
                 TargetPageType = typeof(Views.Pages.DashboardPage)
+            },
+            new NavigationViewItem()
+            {
+                Content = "ミニプレーヤー",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.MusicNote224 },
+                TargetPageType = typeof(Views.Pages.MiniPlayerPage)
             }
         };
 

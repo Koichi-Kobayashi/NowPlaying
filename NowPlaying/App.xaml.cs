@@ -52,6 +52,7 @@ namespace NowPlaying
                 services.AddSingleton<ShareService>();
                 services.AddSingleton<DashboardPage>();
                 services.AddSingleton<DashboardViewModel>();
+                services.AddSingleton<Views.Pages.MiniPlayerPage>();
                 services.AddSingleton<SettingsPage>();
                 services.AddSingleton<SettingsViewModel>();
             }).Build();
