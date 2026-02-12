@@ -90,11 +90,27 @@
       GroupName="postalbumartworkSelect"
       IsChecked="{Binding ViewModel.PostAlbumArtwork, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
 
+    <TextBlock Margin="0,12,0,0" Text="投稿後にシェアウィンドウを自動で閉じる" />
+    <RadioButton
+      Margin="0,12,0,0"
+      Command="{Binding ViewModel.ChangeAutoCloseShareWindowCommand, Mode=OneWay}"
+      CommandParameter="autoclosesharewindow_true"
+      Content="オン"
+      GroupName="autoclosesharewindowSelect"
+      IsChecked="{Binding ViewModel.AutoCloseShareWindow, Mode=OneWay}" />
+    <RadioButton
+      Margin="0,8,0,0"
+      Command="{Binding ViewModel.ChangeAutoCloseShareWindowCommand, Mode=OneWay}"
+      CommandParameter="autoclosesharewindow_false"
+      Content="オフ"
+      GroupName="autoclosesharewindowSelect"
+      IsChecked="{Binding ViewModel.AutoCloseShareWindow, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
+
     <TextBlock
       Margin="0,24,0,0"
       FontSize="20"
       FontWeight="Medium"
       Text="About NowPlaying" />
-    <TextBlock Margin="0,12,0,0" Text="{Binding ViewModel.AppVersion, Mode=OneWay}" />
+    <TextBlock Margin="0,12,0,24" Text="{Binding ViewModel.AppVersion, Mode=OneWay}" />
   </StackPanel>
 </Page>

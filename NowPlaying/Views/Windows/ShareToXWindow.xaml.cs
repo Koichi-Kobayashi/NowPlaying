@@ -8,6 +8,7 @@ public partial class ShareToXWindow : FluentWindow
 {
     private readonly string _url;
     private readonly bool _hasAlbumArtwork;
+    private readonly bool _autoClose;
 
     private const int VK_CONTROL = 0x11;
     private const int VK_V = 0x56;
@@ -16,10 +17,11 @@ public partial class ShareToXWindow : FluentWindow
     [DllImport("user32.dll")]
     private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
 
-    public ShareToXWindow(string url, bool hasAlbumArtwork = false)
+    public ShareToXWindow(string url, bool hasAlbumArtwork = false, bool autoClose = false)
     {
         _url = url;
         _hasAlbumArtwork = hasAlbumArtwork;
+        _autoClose = autoClose;
         InitializeComponent();
         Loaded += OnLoaded;
     }
@@ -90,10 +92,13 @@ public partial class ShareToXWindow : FluentWindow
                     return false;
                 })();
             ";
-            await coreWebView2.ExecuteScriptAsync(clickPostScript);
+            var clickResult = await coreWebView2.ExecuteScriptAsync(clickPostScript);
             await Task.Delay(2000);
 
-            await Dispatcher.InvokeAsync(Close);
+            // 「自動で閉じる」がオンで、投稿ボタンのクリックに成功した場合のみ閉じる（ログインページにいる場合は閉じない）
+            var postSucceeded = clickResult?.Trim('"') == "true";
+            if (_autoClose && postSucceeded)
+                await Dispatcher.InvokeAsync(Close);
         }
         catch (Exception ex)
         {

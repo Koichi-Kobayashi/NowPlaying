@@ -153,7 +153,8 @@ public class ShareService
 
         var url = BuildXIntentUrl(track);
         var hasAlbumArtwork = postAlbumArtwork && track.AlbumArtwork != null;
-        var window = new Views.Windows.ShareToXWindow(url, hasAlbumArtwork);
+        var autoClose = _appSettingsService.AutoCloseShareWindow;
+        var window = new Views.Windows.ShareToXWindow(url, hasAlbumArtwork, autoClose);
         window.Closed += (_, _) => _appSettingsService.MarkShareSucceeded();
         window.Show();
     }

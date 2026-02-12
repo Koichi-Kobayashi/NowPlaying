@@ -47,6 +47,19 @@ namespace NowPlaying.ViewModels.Pages
             }
         }
 
+        public bool AutoCloseShareWindow
+        {
+            get => _appSettingsService.AutoCloseShareWindow;
+            set
+            {
+                if (_appSettingsService.AutoCloseShareWindow != value)
+                {
+                    _appSettingsService.AutoCloseShareWindow = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public SettingsViewModel(INavigationWindow navigationWindow, AppSettingsService appSettingsService)
         {
             _navigationWindow = navigationWindow;
@@ -66,7 +79,7 @@ namespace NowPlaying.ViewModels.Pages
         private void InitializeViewModel()
         {
             CurrentTheme = ApplicationThemeManager.GetAppTheme();
-            AppVersion = $"UiDesktopApp1 - {GetAssemblyVersion()}";
+            AppVersion = $"{GetAssemblyVersion()}";
 
             if (_navigationWindow is MainWindow mainWindow)
             {
@@ -75,12 +88,15 @@ namespace NowPlaying.ViewModels.Pages
 
             OnPropertyChanged(nameof(AutoPost));
             OnPropertyChanged(nameof(PostAlbumArtwork));
+            OnPropertyChanged(nameof(AutoCloseShareWindow));
             _appSettingsService.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName == nameof(AppSettingsService.AutoPost))
                     OnPropertyChanged(nameof(AutoPost));
                 if (e.PropertyName == nameof(AppSettingsService.PostAlbumArtwork))
                     OnPropertyChanged(nameof(PostAlbumArtwork));
+                if (e.PropertyName == nameof(AppSettingsService.AutoCloseShareWindow))
+                    OnPropertyChanged(nameof(AutoCloseShareWindow));
             };
 
             _isInitialized = true;
@@ -149,6 +165,16 @@ namespace NowPlaying.ViewModels.Pages
                 return;
 
             PostAlbumArtwork = newPostAlbumArtwork;
+        }
+
+        [RelayCommand]
+        private void OnChangeAutoCloseShareWindow(string parameter)
+        {
+            var newAutoCloseShareWindow = parameter == "autoclosesharewindow_true";
+            if (AutoCloseShareWindow == newAutoCloseShareWindow)
+                return;
+
+            AutoCloseShareWindow = newAutoCloseShareWindow;
         }
     }
 }

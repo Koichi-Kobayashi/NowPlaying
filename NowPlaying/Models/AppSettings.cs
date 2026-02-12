@@ -13,4 +13,7 @@ public class AppSettings
 
     /// <summary>アルバムアートワークをポストするか。デフォルトはオフ。</summary>
     public bool PostAlbumArtwork { get; set; }
+
+    /// <summary>投稿後にシェアウィンドウを自動で閉じるか。デフォルトはオフ。</summary>
+    public bool AutoCloseShareWindow { get; set; }
 }
