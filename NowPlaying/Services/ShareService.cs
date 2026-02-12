@@ -182,7 +182,10 @@ public class ShareService
     private static string BuildShareText(NowPlayingTrack track)
     {
         if (track.IsEmpty) return "現在再生中の曲がありません #NowPlaying";
-        return $"Now Playing: {track.Title} - {track.Artist} #NowPlaying";
+        var main = $"Now Playing: {track.Title} - {track.Artist}";
+        if (!string.IsNullOrWhiteSpace(track.AlbumTitle))
+            main += $" - {track.AlbumTitle}";
+        return $"{main} #NowPlaying";
     }
 
     private static string BuildXIntentUrl(NowPlayingTrack track)
