@@ -143,33 +143,44 @@ public static class MarqueeScrollGroupBehavior
 
             var allScrollViewers = GetScrollViewers(element).ToArray();
 
-            // 1本分のテキストがビューポートに収まればスクロール不要
-            // 単一テキスト表示時: extent=text幅
-            // マーキー表示時: extent=2*text+gap → textWidth=(extent-gap)/2
-            foreach (var sv in allScrollViewers)
-            {
-                var extentWidth = sv.ExtentWidth;
-                var viewportWidth = sv.ViewportWidth;
-                var isMarquee = GetNeedsScrolling(sv);
-                var textWidth = isMarquee
-                    ? Math.Max(0, (extentWidth - gapWidth) / 2)
-                    : extentWidth;
-                SetNeedsScrolling(sv, textWidth > viewportWidth);
-            }
-
             var scrollViewers = allScrollViewers
                 .Where(GetNeedsScrolling)
                 .ToArray();
 
-            if (scrollViewers.Length == 0) return;
+            var needsInit = scrollViewers.Where(sv => !states.ContainsKey(sv)).ToArray();
+            var isScrolling = scrollViewers.Any(sv => states.TryGetValue(sv, out var st) && !st.IsPaused);
 
-            if (!states.Any())
+            if (!isScrolling)
             {
-                var viewportWidth = scrollViewers[0].ViewportWidth;
+                // スクロール中でないときのみ NeedsScrolling を再評価（スクロール中の誤切替を防ぐ）
+                foreach (var sv in allScrollViewers)
+                {
+                    var extentWidth = sv.ExtentWidth;
+                    var viewportWidth = sv.ViewportWidth;
+                    var isMarquee = GetNeedsScrolling(sv);
+                    var textWidth = isMarquee
+                        ? Math.Max(0, (extentWidth - gapWidth) / 2)
+                        : extentWidth;
+                    SetNeedsScrolling(sv, textWidth > viewportWidth);
+                }
+
+                scrollViewers = allScrollViewers.Where(GetNeedsScrolling).ToArray();
+            }
+
+            if (scrollViewers.Length == 0)
+            {
+                foreach (var sv in allScrollViewers.Where(sv => !GetNeedsScrolling(sv)))
+                    states.Remove(sv);
+                return;
+            }
+
+            if (needsInit.Length > 0)
+            {
+                var vpWidth = scrollViewers[0].ViewportWidth;
                 var items = scrollViewers.Select(sv =>
                 {
                     var loopPoint = (sv.ExtentWidth + gapWidth) / 2;
-                    var distanceToEntry = Math.Max(0, loopPoint - viewportWidth);
+                    var distanceToEntry = Math.Max(0, loopPoint - vpWidth);
                     var timeToEntry = distanceToEntry / speed;
                     return (sv, loopPoint, timeToEntry);
                 }).ToList();
@@ -182,6 +193,9 @@ public static class MarqueeScrollGroupBehavior
                 }
                 return;
             }
+
+            foreach (var sv in allScrollViewers.Where(sv => !GetNeedsScrolling(sv)))
+                states.Remove(sv);
 
             foreach (var sv in scrollViewers)
             {

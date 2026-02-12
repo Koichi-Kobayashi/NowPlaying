@@ -76,7 +76,8 @@
       helpers:MarqueeScrollGroupBehavior.ScrollSpeed="40">
       <ScrollViewer
         x:Name="TitleScroll"
-        Width="400"
+        MaxWidth="400"
+        HorizontalAlignment="Stretch"
         HorizontalScrollBarVisibility="Hidden"
         VerticalScrollBarVisibility="Disabled"
         Visibility="{Binding ViewModel.CurrentTrack.IsEmpty, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
@@ -108,7 +109,8 @@
       </ScrollViewer>
       <ScrollViewer
         x:Name="ArtistScroll"
-        Width="400"
+        MaxWidth="400"
+        HorizontalAlignment="Stretch"
         Margin="0,4,0,0"
         HorizontalScrollBarVisibility="Hidden"
         VerticalScrollBarVisibility="Disabled"
