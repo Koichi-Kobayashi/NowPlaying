@@ -24,8 +24,12 @@ public partial class AppSettingsService : ObservableObject
     [ObservableProperty]
     private bool _hasSuccessfullyShared;
 
+    [ObservableProperty]
+    private bool _postAlbumArtwork;
+
     partial void OnAutoPostChanged(bool value) => Save();
     partial void OnHasSuccessfullySharedChanged(bool value) => Save();
+    partial void OnPostAlbumArtworkChanged(bool value) => Save();
 
     /// <summary>
     /// Xへのシェアが成功したことを記録します。ウィンドウを閉じたときに呼び出されます。
@@ -60,6 +64,7 @@ public partial class AppSettingsService : ObservableObject
             {
                 AutoPost = settings.AutoPost;
                 HasSuccessfullyShared = settings.HasSuccessfullyShared;
+                PostAlbumArtwork = settings.PostAlbumArtwork;
             }
         }
         catch
@@ -78,7 +83,8 @@ public partial class AppSettingsService : ObservableObject
             var settings = new AppSettings
             {
                 AutoPost = AutoPost,
-                HasSuccessfullyShared = HasSuccessfullyShared
+                HasSuccessfullyShared = HasSuccessfullyShared,
+                PostAlbumArtwork = PostAlbumArtwork
             };
             var json = JsonSerializer.Serialize(settings, JsonOptions);
             File.WriteAllText(_filePath, json);

@@ -72,7 +72,7 @@ public class ShareService
                 dtm.DataRequested -= OnDataRequested;
 
                 var deferral = args.Request.GetDeferral();
-                _ = SetShareDataAsync(args.Request.Data, track, deferral);
+                _ = SetShareDataAsync(args.Request.Data, track, deferral, _appSettingsService.PostAlbumArtwork);
             }
 
             interop.ShowShareUIForWindow(hwnd);
@@ -84,7 +84,7 @@ public class ShareService
         }
     }
 
-    private static async Task SetShareDataAsync(DataPackage data, NowPlayingTrack track, DataRequestDeferral deferral)
+    private static async Task SetShareDataAsync(DataPackage data, NowPlayingTrack track, DataRequestDeferral deferral, bool postAlbumArtwork)
     {
         try
         {
@@ -92,7 +92,7 @@ public class ShareService
             data.Properties.Title = "Now Playing";
             data.SetText(text);
 
-            if (track.AlbumArtwork is BitmapSource bitmap)
+            if (postAlbumArtwork && track.AlbumArtwork is BitmapSource bitmap)
             {
                 var streamRef = await CreateStreamReferenceFromBitmapAsync(bitmap);
                 if (streamRef != null)
@@ -136,8 +136,10 @@ public class ShareService
     /// </summary>
     public void ShareViaWebView2(NowPlayingTrack track)
     {
-        // アルバムアートをクリップボードにコピー
-        if (track.AlbumArtwork is BitmapSource bitmap)
+        var postAlbumArtwork = _appSettingsService.PostAlbumArtwork;
+
+        // アルバムアートをクリップボードにコピー（設定がオンの場合のみ）
+        if (postAlbumArtwork && track.AlbumArtwork is BitmapSource bitmap)
         {
             try
             {
@@ -150,7 +152,7 @@ public class ShareService
         }
 
         var url = BuildXIntentUrl(track);
-        var hasAlbumArtwork = track.AlbumArtwork != null;
+        var hasAlbumArtwork = postAlbumArtwork && track.AlbumArtwork != null;
         var window = new Views.Windows.ShareToXWindow(url, hasAlbumArtwork);
         window.Closed += (_, _) => _appSettingsService.MarkShareSucceeded();
         window.Show();

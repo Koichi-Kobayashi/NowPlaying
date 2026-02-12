@@ -10,4 +10,7 @@ public class AppSettings
 
     /// <summary>一度でもXへのシェアに成功したか。自動ポストはこのフラグがtrueのときのみ有効。</summary>
     public bool HasSuccessfullyShared { get; set; }
+
+    /// <summary>アルバムアートワークをポストするか。デフォルトはオフ。</summary>
+    public bool PostAlbumArtwork { get; set; }
 }

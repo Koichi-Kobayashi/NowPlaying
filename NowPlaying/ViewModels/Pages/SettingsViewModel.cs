@@ -34,6 +34,19 @@ namespace NowPlaying.ViewModels.Pages
             }
         }
 
+        public bool PostAlbumArtwork
+        {
+            get => _appSettingsService.PostAlbumArtwork;
+            set
+            {
+                if (_appSettingsService.PostAlbumArtwork != value)
+                {
+                    _appSettingsService.PostAlbumArtwork = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public SettingsViewModel(INavigationWindow navigationWindow, AppSettingsService appSettingsService)
         {
             _navigationWindow = navigationWindow;
@@ -61,10 +74,13 @@ namespace NowPlaying.ViewModels.Pages
             }
 
             OnPropertyChanged(nameof(AutoPost));
+            OnPropertyChanged(nameof(PostAlbumArtwork));
             _appSettingsService.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName == nameof(AppSettingsService.AutoPost))
                     OnPropertyChanged(nameof(AutoPost));
+                if (e.PropertyName == nameof(AppSettingsService.PostAlbumArtwork))
+                    OnPropertyChanged(nameof(PostAlbumArtwork));
             };
 
             _isInitialized = true;
@@ -123,6 +139,16 @@ namespace NowPlaying.ViewModels.Pages
                 return;
 
             AutoPost = newAutoPost;
+        }
+
+        [RelayCommand]
+        private void OnChangePostAlbumArtwork(string parameter)
+        {
+            var newPostAlbumArtwork = parameter == "postalbumartwork_true";
+            if (PostAlbumArtwork == newPostAlbumArtwork)
+                return;
+
+            PostAlbumArtwork = newPostAlbumArtwork;
         }
     }
 }

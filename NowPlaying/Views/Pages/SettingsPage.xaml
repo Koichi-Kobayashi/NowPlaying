@@ -74,6 +74,22 @@
       GroupName="autopostSelect"
       IsChecked="{Binding ViewModel.AutoPost, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
 
+    <TextBlock Margin="0,12,0,0" Text="アルバムアートワークをポストする" />
+    <RadioButton
+      Margin="0,12,0,0"
+      Command="{Binding ViewModel.ChangePostAlbumArtworkCommand, Mode=OneWay}"
+      CommandParameter="postalbumartwork_true"
+      Content="オン"
+      GroupName="postalbumartworkSelect"
+      IsChecked="{Binding ViewModel.PostAlbumArtwork, Mode=OneWay}" />
+    <RadioButton
+      Margin="0,8,0,0"
+      Command="{Binding ViewModel.ChangePostAlbumArtworkCommand, Mode=OneWay}"
+      CommandParameter="postalbumartwork_false"
+      Content="オフ"
+      GroupName="postalbumartworkSelect"
+      IsChecked="{Binding ViewModel.PostAlbumArtwork, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
+
     <TextBlock
       Margin="0,24,0,0"
       FontSize="20"
