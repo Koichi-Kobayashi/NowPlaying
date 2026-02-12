@@ -3,6 +3,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:helpers="clr-namespace:NowPlaying.Helpers"
   xmlns:local="clr-namespace:NowPlaying.Views.Pages"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
@@ -67,20 +68,77 @@
     </Border>
 
     <!--  曲情報  -->
-    <StackPanel Grid.Row="1" Margin="0,0,0,24">
-      <TextBlock
-        FontSize="24"
-        FontWeight="SemiBold"
-        Text="{Binding ViewModel.CurrentTrack.Title, Mode=OneWay}"
-        TextTrimming="CharacterEllipsis"
-        Visibility="{Binding ViewModel.CurrentTrack.IsEmpty, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}" />
-      <TextBlock
+    <StackPanel
+      Grid.Row="1"
+      Margin="0,0,0,24"
+      helpers:MarqueeScrollGroupBehavior.GapWidth="120"
+      helpers:MarqueeScrollGroupBehavior.IsEnabled="True"
+      helpers:MarqueeScrollGroupBehavior.ScrollSpeed="40">
+      <ScrollViewer
+        x:Name="TitleScroll"
+        Width="400"
+        HorizontalScrollBarVisibility="Hidden"
+        VerticalScrollBarVisibility="Disabled"
+        Visibility="{Binding ViewModel.CurrentTrack.IsEmpty, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
+        <Grid>
+          <!--  スクロール不要時: 単一テキスト（右側に先頭文字が出ない）  -->
+          <TextBlock
+            FontSize="24"
+            FontWeight="SemiBold"
+            Text="{Binding ViewModel.CurrentTrack.Title, Mode=OneWay}"
+            TextWrapping="NoWrap"
+            Visibility="{Binding (helpers:MarqueeScrollGroupBehavior.NeedsScrolling), RelativeSource={RelativeSource AncestorType=ScrollViewer}, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Visible}" />
+          <!--  スクロール必要時: [Text][Gap][Text]  -->
+          <StackPanel
+            Orientation="Horizontal"
+            Visibility="{Binding (helpers:MarqueeScrollGroupBehavior.NeedsScrolling), RelativeSource={RelativeSource AncestorType=ScrollViewer}, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+            <TextBlock
+              FontSize="24"
+              FontWeight="SemiBold"
+              Text="{Binding ViewModel.CurrentTrack.Title, Mode=OneWay}"
+              TextWrapping="NoWrap" />
+            <Border Width="120" />
+            <TextBlock
+              FontSize="24"
+              FontWeight="SemiBold"
+              Text="{Binding ViewModel.CurrentTrack.Title, Mode=OneWay}"
+              TextWrapping="NoWrap" />
+          </StackPanel>
+        </Grid>
+      </ScrollViewer>
+      <ScrollViewer
+        x:Name="ArtistScroll"
+        Width="400"
         Margin="0,4,0,0"
-        FontSize="16"
-        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-        Text="{Binding ViewModel.CurrentTrack.Artist, Mode=OneWay}"
-        TextTrimming="CharacterEllipsis"
-        Visibility="{Binding ViewModel.CurrentTrack.IsEmpty, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}" />
+        HorizontalScrollBarVisibility="Hidden"
+        VerticalScrollBarVisibility="Disabled"
+        Visibility="{Binding ViewModel.CurrentTrack.IsEmpty, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
+        <Grid>
+          <!--  スクロール不要時: 単一テキスト  -->
+          <TextBlock
+            FontSize="16"
+            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+            Text="{Binding ViewModel.CurrentTrack.Artist, Mode=OneWay}"
+            TextWrapping="NoWrap"
+            Visibility="{Binding (helpers:MarqueeScrollGroupBehavior.NeedsScrolling), RelativeSource={RelativeSource AncestorType=ScrollViewer}, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Visible}" />
+          <!--  スクロール必要時: [Text][Gap][Text]  -->
+          <StackPanel
+            Orientation="Horizontal"
+            Visibility="{Binding (helpers:MarqueeScrollGroupBehavior.NeedsScrolling), RelativeSource={RelativeSource AncestorType=ScrollViewer}, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+            <TextBlock
+              FontSize="16"
+              Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+              Text="{Binding ViewModel.CurrentTrack.Artist, Mode=OneWay}"
+              TextWrapping="NoWrap" />
+            <Border Width="120" />
+            <TextBlock
+              FontSize="16"
+              Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+              Text="{Binding ViewModel.CurrentTrack.Artist, Mode=OneWay}"
+              TextWrapping="NoWrap" />
+          </StackPanel>
+        </Grid>
+      </ScrollViewer>
       <TextBlock
         Margin="0,16,0,0"
         FontSize="14"
