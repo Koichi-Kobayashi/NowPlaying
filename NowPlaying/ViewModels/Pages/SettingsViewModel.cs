@@ -1,4 +1,6 @@
-﻿using Wpf.Ui.Abstractions.Controls;
+using NowPlaying.Views.Windows;
+using Wpf.Ui;
+using Wpf.Ui.Abstractions.Controls;
 using Wpf.Ui.Appearance;
 
 namespace NowPlaying.ViewModels.Pages
@@ -6,12 +8,21 @@ namespace NowPlaying.ViewModels.Pages
     public partial class SettingsViewModel : ObservableObject, INavigationAware
     {
         private bool _isInitialized = false;
+        private readonly INavigationWindow _navigationWindow;
 
         [ObservableProperty]
         private string _appVersion = String.Empty;
 
         [ObservableProperty]
         private ApplicationTheme _currentTheme = ApplicationTheme.Unknown;
+
+        [ObservableProperty]
+        private bool _topmost;
+
+        public SettingsViewModel(INavigationWindow navigationWindow)
+        {
+            _navigationWindow = navigationWindow;
+        }
 
         public Task OnNavigatedToAsync()
         {
@@ -27,6 +38,11 @@ namespace NowPlaying.ViewModels.Pages
         {
             CurrentTheme = ApplicationThemeManager.GetAppTheme();
             AppVersion = $"UiDesktopApp1 - {GetAssemblyVersion()}";
+
+            if (_navigationWindow is MainWindow mainWindow)
+            {
+                Topmost = mainWindow.Topmost;
+            }
 
             _isInitialized = true;
         }
@@ -59,6 +75,20 @@ namespace NowPlaying.ViewModels.Pages
                     CurrentTheme = ApplicationTheme.Dark;
 
                     break;
+            }
+        }
+
+        [RelayCommand]
+        private void OnChangeTopmost(string parameter)
+        {
+            var newTopmost = parameter == "topmost_true";
+            if (Topmost == newTopmost)
+                return;
+
+            Topmost = newTopmost;
+            if (_navigationWindow is MainWindow mainWindow)
+            {
+                mainWindow.Topmost = newTopmost;
             }
         }
     }

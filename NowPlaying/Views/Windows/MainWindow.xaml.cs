@@ -60,6 +60,7 @@ namespace NowPlaying.Views.Windows
             Top = state.Top;
             Width = state.Width;
             Height = state.Height;
+            Topmost = state.Topmost;
 
             if (state.IsMiniPlayer)
             {
@@ -84,7 +85,8 @@ namespace NowPlaying.Views.Windows
                 Height = Height,
                 Left = Left,
                 Top = Top,
-                IsMiniPlayer = isMiniPlayer
+                IsMiniPlayer = isMiniPlayer,
+                Topmost = Topmost
             };
             _windowStateService.Save(state);
         }

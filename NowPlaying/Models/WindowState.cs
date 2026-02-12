@@ -19,4 +19,7 @@ public class WindowState
 
     /// <summary>true=ミニプレーヤー、false=ダッシュボード</summary>
     public bool IsMiniPlayer { get; set; }
+
+    /// <summary>true=最前面で表示、false=通常表示</summary>
+    public bool Topmost { get; set; }
 }
