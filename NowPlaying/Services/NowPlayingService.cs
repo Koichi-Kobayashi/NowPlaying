@@ -107,11 +107,26 @@ public partial class NowPlayingService : ObservableObject
                 }
             }
 
+            var title = props.Title ?? string.Empty;
+            var artist = props.Artist ?? string.Empty;
+            var albumTitle = props.AlbumTitle ?? string.Empty;
+
+            // 一部のプレイヤーが Artist に「アーティスト — アルバム」形式で渡す場合をパース
+            if (string.IsNullOrWhiteSpace(albumTitle) && !string.IsNullOrWhiteSpace(artist))
+            {
+                var split = SplitArtistAndAlbum(artist);
+                if (split.HasValue)
+                {
+                    artist = split.Value.Artist;
+                    albumTitle = split.Value.Album;
+                }
+            }
+
             CurrentTrack = new NowPlayingTrack
             {
-                Title = props.Title ?? string.Empty,
-                Artist = props.Artist ?? string.Empty,
-                AlbumTitle = props.AlbumTitle ?? string.Empty,
+                Title = title,
+                Artist = artist,
+                AlbumTitle = albumTitle,
                 AlbumArtwork = artwork,
                 IsPlaying = playbackInfo?.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing
             };
@@ -123,6 +138,26 @@ public partial class NowPlayingService : ObservableObject
             System.Diagnostics.Debug.WriteLine($"Update track error: {ex.Message}");
             CurrentTrack = new NowPlayingTrack();
         }
+    }
+
+    /// <summary>
+    /// 「アーティスト — アルバム」形式の文字列を分割する。
+    /// 一部のメディアプレイヤーが Artist フィールドにアーティストとアルバムを結合して渡す場合に対応。
+    /// </summary>
+    private static (string Artist, string Album)? SplitArtistAndAlbum(string combined)
+    {
+        var separators = new[] { " — ", " – ", " - " };
+        foreach (var sep in separators)
+        {
+            var idx = combined.IndexOf(sep, StringComparison.Ordinal);
+            if (idx <= 0) continue;
+
+            var artist = combined[..idx].Trim();
+            var album = combined[(idx + sep.Length)..].Trim();
+            if (!string.IsNullOrEmpty(artist) && !string.IsNullOrEmpty(album))
+                return (artist, album);
+        }
+        return null;
     }
 
     private static async Task<ImageSource?> GetBitmapFromStreamAsync(Windows.Storage.Streams.IRandomAccessStreamReference streamRef)

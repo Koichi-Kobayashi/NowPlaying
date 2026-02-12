@@ -137,6 +137,36 @@
           </StackPanel>
         </Grid>
       </ScrollViewer>
+      <ScrollViewer
+        x:Name="AlbumScroll"
+        MaxWidth="400"
+        Margin="0,4,0,0"
+        HorizontalAlignment="Stretch"
+        HorizontalScrollBarVisibility="Hidden"
+        VerticalScrollBarVisibility="Disabled"
+        Visibility="{Binding ViewModel.CurrentTrack.ShowAlbumLine, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+        <Grid>
+          <TextBlock
+            FontSize="14"
+            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+            Text="{Binding ViewModel.CurrentTrack.AlbumTitle, Mode=OneWay}"
+            TextWrapping="NoWrap"
+            Visibility="{Binding (helpers:MarqueeScrollGroupBehavior.NeedsScrolling), RelativeSource={RelativeSource AncestorType=ScrollViewer}, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Visible}" />
+          <StackPanel Orientation="Horizontal" Visibility="{Binding (helpers:MarqueeScrollGroupBehavior.NeedsScrolling), RelativeSource={RelativeSource AncestorType=ScrollViewer}, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+            <TextBlock
+              FontSize="14"
+              Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+              Text="{Binding ViewModel.CurrentTrack.AlbumTitle, Mode=OneWay}"
+              TextWrapping="NoWrap" />
+            <Border Width="120" />
+            <TextBlock
+              FontSize="14"
+              Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+              Text="{Binding ViewModel.CurrentTrack.AlbumTitle, Mode=OneWay}"
+              TextWrapping="NoWrap" />
+          </StackPanel>
+        </Grid>
+      </ScrollViewer>
       <TextBlock
         Margin="0,16,0,0"
         FontSize="14"
