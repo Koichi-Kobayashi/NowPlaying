@@ -10,7 +10,7 @@
   Title="Now Playing"
   d:DataContext="{d:DesignInstance local:DashboardPage,
                                    IsDesignTimeCreatable=False}"
-  d:DesignHeight="640"
+  d:DesignHeight="660"
   d:DesignWidth="640"
   ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
   ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"

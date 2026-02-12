@@ -9,7 +9,7 @@ public partial class MiniPlayerPage : INavigableView<DashboardViewModel>
     private const double MiniWidth = 640;
     private const double MiniHeight = 280;
     private const double NormalWidth = 640;
-    private const double NormalHeight = 640;
+    private const double NormalHeight = 660;
 
     public DashboardViewModel ViewModel { get; }
 

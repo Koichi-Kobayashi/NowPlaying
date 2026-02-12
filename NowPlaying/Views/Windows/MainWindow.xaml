@@ -8,10 +8,10 @@
   xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
   Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
   Width="640"
-  Height="640"
+  Height="660"
   d:DataContext="{d:DesignInstance local:MainWindow,
                                    IsDesignTimeCreatable=True}"
-  d:DesignHeight="640"
+  d:DesignHeight="660"
   d:DesignWidth="640"
   ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
   ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"

@@ -15,6 +15,13 @@ namespace NowPlaying.Services;
 /// </summary>
 public class ShareService
 {
+    private readonly AppSettingsService _appSettingsService;
+
+    public ShareService(AppSettingsService appSettingsService)
+    {
+        _appSettingsService = appSettingsService;
+    }
+
     private static readonly Guid IDataTransferManagerInteropGuid = new("3A3DCD6C-3EAB-43DC-BCDE-45671CE800C8");
     private static readonly Guid DataTransferManagerGuid = new(0xa5caee9b, 0x8708, 0x49d1, 0x8d, 0x36, 0x67, 0xd2, 0x5a, 0x8d, 0xa0, 0x0c);
 
@@ -145,6 +152,7 @@ public class ShareService
         var url = BuildXIntentUrl(track);
         var hasAlbumArtwork = track.AlbumArtwork != null;
         var window = new Views.Windows.ShareToXWindow(url, hasAlbumArtwork);
+        window.Closed += (_, _) => _appSettingsService.MarkShareSucceeded();
         window.Show();
     }
 

@@ -1,3 +1,4 @@
+using NowPlaying.Services;
 using NowPlaying.Views.Windows;
 using Wpf.Ui;
 using Wpf.Ui.Abstractions.Controls;
@@ -9,6 +10,7 @@ namespace NowPlaying.ViewModels.Pages
     {
         private bool _isInitialized = false;
         private readonly INavigationWindow _navigationWindow;
+        private readonly AppSettingsService _appSettingsService;
 
         [ObservableProperty]
         private string _appVersion = String.Empty;
@@ -19,9 +21,23 @@ namespace NowPlaying.ViewModels.Pages
         [ObservableProperty]
         private bool _topmost;
 
-        public SettingsViewModel(INavigationWindow navigationWindow)
+        public bool AutoPost
+        {
+            get => _appSettingsService.AutoPost;
+            set
+            {
+                if (_appSettingsService.AutoPost != value)
+                {
+                    _appSettingsService.AutoPost = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public SettingsViewModel(INavigationWindow navigationWindow, AppSettingsService appSettingsService)
         {
             _navigationWindow = navigationWindow;
+            _appSettingsService = appSettingsService;
         }
 
         public Task OnNavigatedToAsync()
@@ -43,6 +59,13 @@ namespace NowPlaying.ViewModels.Pages
             {
                 Topmost = mainWindow.Topmost;
             }
+
+            OnPropertyChanged(nameof(AutoPost));
+            _appSettingsService.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(AppSettingsService.AutoPost))
+                    OnPropertyChanged(nameof(AutoPost));
+            };
 
             _isInitialized = true;
         }
@@ -90,6 +113,16 @@ namespace NowPlaying.ViewModels.Pages
             {
                 mainWindow.Topmost = newTopmost;
             }
+        }
+
+        [RelayCommand]
+        private void OnChangeAutoPost(string parameter)
+        {
+            var newAutoPost = parameter == "autopost_true";
+            if (AutoPost == newAutoPost)
+                return;
+
+            AutoPost = newAutoPost;
         }
     }
 }

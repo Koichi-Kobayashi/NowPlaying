@@ -28,16 +28,12 @@ public partial class ShareToXWindow : FluentWindow
     {
         Loaded -= OnLoaded;
         WebView.Source = new Uri(_url);
-
-        if (_hasAlbumArtwork)
-        {
-            WebView.NavigationCompleted += OnNavigationCompleted;
-        }
+        WebView.NavigationCompleted += OnNavigationCompleted;
     }
 
     private async void OnNavigationCompleted(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
     {
-        if (sender is not Microsoft.Web.WebView2.Wpf.WebView2 wv || !_hasAlbumArtwork)
+        if (sender is not Microsoft.Web.WebView2.Wpf.WebView2 wv)
             return;
 
         wv.NavigationCompleted -= OnNavigationCompleted;
@@ -49,40 +45,59 @@ public partial class ShareToXWindow : FluentWindow
             var coreWebView2 = wv.CoreWebView2;
             if (coreWebView2 == null) return;
 
-            await Dispatcher.InvokeAsync(() =>
+            if (_hasAlbumArtwork)
             {
-                wv.Focus();
-                Activate();
-            });
-            await Task.Delay(300);
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    wv.Focus();
+                    Activate();
+                });
+                await Task.Delay(300);
 
-            var focusScript = @"
+                var focusScript = @"
+                    (function() {
+                        var sel = document.querySelector('[data-testid=""tweetTextarea_0""]') ||
+                                 document.querySelector('[data-testid=""tweetTextarea""]') ||
+                                 document.querySelector('div[contenteditable=""true""][role=""textbox""]') ||
+                                 document.querySelector('div[contenteditable=""true""]');
+                        if (sel) {
+                            sel.focus();
+                            sel.click();
+                            return true;
+                        }
+                        return false;
+                    })();
+                ";
+                await coreWebView2.ExecuteScriptAsync(focusScript);
+                await Task.Delay(300);
+
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    Activate();
+                    wv.Focus();
+                    SendPasteKeys();
+                });
+                await Task.Delay(1500);
+            }
+
+            var clickPostScript = @"
                 (function() {
-                    var sel = document.querySelector('[data-testid=""tweetTextarea_0""]') ||
-                             document.querySelector('[data-testid=""tweetTextarea""]') ||
-                             document.querySelector('div[contenteditable=""true""][role=""textbox""]') ||
-                             document.querySelector('div[contenteditable=""true""]');
-                    if (sel) {
-                        sel.focus();
-                        sel.click();
+                    var btn = document.querySelector('button[data-testid=""tweetButton""]');
+                    if (btn) {
+                        btn.click();
                         return true;
                     }
                     return false;
                 })();
             ";
-            await coreWebView2.ExecuteScriptAsync(focusScript);
-            await Task.Delay(300);
+            await coreWebView2.ExecuteScriptAsync(clickPostScript);
+            await Task.Delay(2000);
 
-            await Dispatcher.InvokeAsync(() =>
-            {
-                Activate();
-                wv.Focus();
-                SendPasteKeys();
-            });
+            await Dispatcher.InvokeAsync(Close);
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Auto-paste error: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Share automation error: {ex.Message}");
         }
     }
 
