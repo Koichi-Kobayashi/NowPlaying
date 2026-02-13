@@ -7,7 +7,7 @@ namespace NowPlaying.ViewModels.Windows
     public partial class MainWindowViewModel : ObservableObject
     {
         [ObservableProperty]
-        private string _applicationTitle = "NowPlaying";
+        private string _applicationTitle = "Now Playing";
 
         [ObservableProperty]
         private ObservableCollection<object> _menuItems = new()
