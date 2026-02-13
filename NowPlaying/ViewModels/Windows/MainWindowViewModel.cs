@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using NowPlaying.Services;
 using Wpf.Ui.Controls;
 
 namespace NowPlaying.ViewModels.Windows
@@ -13,15 +14,17 @@ namespace NowPlaying.ViewModels.Windows
         {
             new NavigationViewItem()
             {
-                Content = "NowPlaying",
+                Content = Loc.Get("Nav_Home"),
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Home24 },
-                TargetPageType = typeof(Views.Pages.DashboardPage)
+                TargetPageType = typeof(Views.Pages.DashboardPage),
+                Tag = "Nav_Home"
             },
             new NavigationViewItem()
             {
-                Content = "ミニプレーヤー",
+                Content = Loc.Get("Nav_MiniPlayer"),
                 Icon = new SymbolIcon { Symbol = SymbolRegular.MusicNote224 },
-                TargetPageType = typeof(Views.Pages.MiniPlayerPage)
+                TargetPageType = typeof(Views.Pages.MiniPlayerPage),
+                Tag = "Nav_MiniPlayer"
             }
         };
 
@@ -30,16 +33,41 @@ namespace NowPlaying.ViewModels.Windows
         {
             new NavigationViewItem()
             {
-                Content = "Settings",
+                Content = Loc.Get("Nav_Settings"),
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Settings24 },
-                TargetPageType = typeof(Views.Pages.SettingsPage)
+                TargetPageType = typeof(Views.Pages.SettingsPage),
+                Tag = "Nav_Settings"
             }
         };
 
         [ObservableProperty]
         private ObservableCollection<MenuItem> _trayMenuItems = new()
         {
-            new MenuItem { Header = "Home", Tag = "tray_home" }
+            new MenuItem { Header = Loc.Get("Nav_TrayHome"), Tag = "tray_home" }
         };
+
+        public MainWindowViewModel()
+        {
+            LocalizationService.Instance.LanguageChanged += OnLanguageChanged;
+        }
+
+        private void OnLanguageChanged(object? sender, EventArgs e)
+        {
+            foreach (var item in MenuItems)
+            {
+                if (item is NavigationViewItem nvi && nvi.Tag is string key)
+                    nvi.Content = Loc.Get(key);
+            }
+            foreach (var item in FooterMenuItems)
+            {
+                if (item is NavigationViewItem nvi && nvi.Tag is string key)
+                    nvi.Content = Loc.Get(key);
+            }
+            foreach (var item in TrayMenuItems)
+            {
+                if (item is MenuItem mi && mi.Tag is "tray_home")
+                    mi.Header = Loc.Get("Nav_TrayHome");
+            }
+        }
     }
 }

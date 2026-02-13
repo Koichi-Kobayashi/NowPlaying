@@ -39,4 +39,10 @@
     <Resource Include="Assets\NowPlaying-icon.png" />
   </ItemGroup>
 
+  <!-- Localization resources - copy to output directory -->
+  <ItemGroup>
+    <Content Include="Strings\**\*.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

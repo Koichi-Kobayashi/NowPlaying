@@ -5,8 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:helpers="clr-namespace:NowPlaying.Helpers"
     xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-    Title="Xでシェア"
+    Title="{helpers:Loc Key=Window_ShareToX_Title}"
     Width="600"
     Height="700"
     ExtendsContentIntoTitleBar="True"
@@ -22,7 +23,7 @@
 
         <ui:TitleBar
             x:Name="TitleBar"
-            Title="Xでシェア"
+            Title="{helpers:Loc Key=Window_ShareToX_Title}"
             Grid.Row="0"
             CloseWindowByDoubleClickOnIcon="True" />
 
@@ -34,7 +35,7 @@
             <TextBlock
                 FontSize="13"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                Text="アルバムアートがある場合、読み込み完了後に自動で貼り付けられます。手動の場合は Ctrl+V を押してください。"
+                Text="{helpers:Loc Key=Share_AlbumArtHint}"
                 TextWrapping="Wrap" />
         </Border>
 

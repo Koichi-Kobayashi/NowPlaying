@@ -105,4 +105,11 @@
   <ItemGroup>
     <ProjectReference Include="..\NowPlaying\NowPlaying.csproj" />
   </ItemGroup>
+  <!-- StringsフォルダーをMSIXパッケージに含める -->
+  <ItemGroup>
+    <PRIResource Include="..\NowPlaying\Strings\**\*.resw">
+      <Link>Strings\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <SubType>Designer</SubType>
+    </PRIResource>
+  </ItemGroup>
 </Project>

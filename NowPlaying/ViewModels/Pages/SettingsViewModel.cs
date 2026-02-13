@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using System.Globalization;
 using NowPlaying.Services;
 using NowPlaying.Views.Windows;
 using Wpf.Ui;
@@ -17,6 +19,12 @@ namespace NowPlaying.ViewModels.Pages
 
         [ObservableProperty]
         private ApplicationTheme _currentTheme = ApplicationTheme.Unknown;
+
+        [ObservableProperty]
+        private ObservableCollection<LanguageItem> _availableLanguages = [];
+
+        [ObservableProperty]
+        private LanguageItem? _selectedLanguage;
 
         [ObservableProperty]
         private bool _topmost;
@@ -81,6 +89,8 @@ namespace NowPlaying.ViewModels.Pages
             CurrentTheme = ApplicationThemeManager.GetAppTheme();
             AppVersion = $"{GetAssemblyVersion()}";
 
+            InitializeLanguages();
+
             if (_navigationWindow is MainWindow mainWindow)
             {
                 Topmost = mainWindow.Topmost;
@@ -100,6 +110,33 @@ namespace NowPlaying.ViewModels.Pages
             };
 
             _isInitialized = true;
+        }
+
+        private void InitializeLanguages()
+        {
+            var locService = LocalizationService.Instance;
+            AvailableLanguages.Clear();
+
+            foreach (var culture in locService.SupportedCultures)
+            {
+                var item = new LanguageItem(
+                    culture.Name,
+                    locService.GetCultureDisplayName(culture));
+                AvailableLanguages.Add(item);
+
+                if (culture.Name.Equals(locService.CurrentCulture.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    SelectedLanguage = item;
+                }
+            }
+        }
+
+        partial void OnSelectedLanguageChanged(LanguageItem? value)
+        {
+            if (value != null && _isInitialized)
+            {
+                LocalizationService.Instance.SetCulture(value.CultureName);
+            }
         }
 
         private string GetAssemblyVersion()
@@ -176,5 +213,10 @@ namespace NowPlaying.ViewModels.Pages
 
             AutoCloseShareWindow = newAutoCloseShareWindow;
         }
+    }
+
+    public record LanguageItem(string CultureName, string DisplayName)
+    {
+        public override string ToString() => DisplayName;
     }
 }

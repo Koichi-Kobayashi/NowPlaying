@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Window/Share -->
+  <data name="Window_ShareToX_Title" xml:space="preserve">
+    <value>Share on X</value>
+  </data>
+  <data name="Share_AlbumArtHint" xml:space="preserve">
+    <value>Album artwork will be auto-pasted when loaded. For manual paste, press Ctrl+V.</value>
+  </data>
+  <data name="Share_NoTrack" xml:space="preserve">
+    <value>No track currently playing #NowPlaying</value>
+  </data>
+  <data name="Track_NoTrack" xml:space="preserve">
+    <value>No track currently playing</value>
+  </data>
+  <data name="Button_ShareToX" xml:space="preserve">
+    <value>Share on X</value>
+  </data>
+
+  <!-- Navigation -->
+  <data name="Nav_Home" xml:space="preserve">
+    <value>NowPlaying</value>
+  </data>
+  <data name="Nav_MiniPlayer" xml:space="preserve">
+    <value>Mini Player</value>
+  </data>
+  <data name="Nav_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Nav_TrayHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+
+  <!-- Settings - Window Display -->
+  <data name="Settings_WindowDisplay" xml:space="preserve">
+    <value>Window Display</value>
+  </data>
+  <data name="Settings_Topmost" xml:space="preserve">
+    <value>Always on top</value>
+  </data>
+  <data name="Settings_Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+
+  <!-- Settings - Share to X -->
+  <data name="Settings_ShareToX" xml:space="preserve">
+    <value>Share to X</value>
+  </data>
+  <data name="Settings_AutoPost" xml:space="preserve">
+    <value>Auto post</value>
+  </data>
+  <data name="Settings_Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Settings_PostAlbumArtwork" xml:space="preserve">
+    <value>Post album artwork</value>
+  </data>
+  <data name="Settings_On" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="Settings_AutoCloseShareWindow" xml:space="preserve">
+    <value>Auto close share window after posting</value>
+  </data>
+
+  <!-- Settings - General -->
+  <data name="Settings_Personalization" xml:space="preserve">
+    <value>Personalization</value>
+  </data>
+  <data name="Settings_Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="Settings_ThemeLight" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Settings_ThemeDark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings_About" xml:space="preserve">
+    <value>About NowPlaying</value>
+  </data>
+
+  <!-- Language Names -->
+  <data name="Language_en-US" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_ja-JP" xml:space="preserve">
+    <value>Japanese (日本語)</value>
+  </data>
+</root>

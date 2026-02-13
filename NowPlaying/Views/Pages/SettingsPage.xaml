@@ -10,7 +10,7 @@
   Title="SettingsPage"
   d:DataContext="{d:DesignInstance local:SettingsPage,
                                    IsDesignTimeCreatable=False}"
-  d:DesignHeight="450"
+  d:DesignHeight="800"
   d:DesignWidth="800"
   ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
   ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -25,84 +25,98 @@
     <TextBlock
       FontSize="20"
       FontWeight="Medium"
-      Text="Personalization" />
-    <TextBlock Margin="0,12,0,0" Text="Theme" />
+      Text="{helpers:Loc Key=Settings_Personalization}" />
+    <TextBlock Margin="0,12,0,0" Text="{helpers:Loc Key=Settings_Theme}" />
     <RadioButton
       Margin="0,12,0,0"
       Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
       CommandParameter="theme_light"
-      Content="Light"
+      Content="{helpers:Loc Key=Settings_ThemeLight}"
       GroupName="themeSelect"
       IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}" />
     <RadioButton
       Margin="0,8,0,0"
       Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
       CommandParameter="theme_dark"
-      Content="Dark"
+      Content="{helpers:Loc Key=Settings_ThemeDark}"
       GroupName="themeSelect"
       IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}" />
 
-    <TextBlock Margin="0,24,0,0" Text="ウィンドウの表示" />
+    <TextBlock Margin="0,24,0,0" Text="{helpers:Loc Key=Settings_Language}" />
+    <ComboBox
+      Width="200"
+      Margin="0,12,0,0"
+      HorizontalAlignment="Left"
+      ItemsSource="{Binding ViewModel.AvailableLanguages}"
+      SelectedItem="{Binding ViewModel.SelectedLanguage, Mode=TwoWay}">
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{Binding DisplayName}" />
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
+
+    <TextBlock Margin="0,24,0,0" Text="{helpers:Loc Key=Settings_WindowDisplay}" />
     <RadioButton
       Margin="0,12,0,0"
       Command="{Binding ViewModel.ChangeTopmostCommand, Mode=OneWay}"
       CommandParameter="topmost_true"
-      Content="最前面で表示する"
+      Content="{helpers:Loc Key=Settings_Topmost}"
       GroupName="topmostSelect"
       IsChecked="{Binding ViewModel.Topmost, Mode=OneWay}" />
     <RadioButton
       Margin="0,8,0,0"
       Command="{Binding ViewModel.ChangeTopmostCommand, Mode=OneWay}"
       CommandParameter="topmost_false"
-      Content="通常表示"
+      Content="{helpers:Loc Key=Settings_Normal}"
       GroupName="topmostSelect"
       IsChecked="{Binding ViewModel.Topmost, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
 
-    <TextBlock Margin="0,24,0,0" Text="Xへの共有" />
+    <TextBlock Margin="0,24,0,0" Text="{helpers:Loc Key=Settings_ShareToX}" />
     <RadioButton
       Margin="0,12,0,0"
       Command="{Binding ViewModel.ChangeAutoPostCommand, Mode=OneWay}"
       CommandParameter="autopost_true"
-      Content="自動ポストする"
+      Content="{helpers:Loc Key=Settings_AutoPost}"
       GroupName="autopostSelect"
       IsChecked="{Binding ViewModel.AutoPost, Mode=OneWay}" />
     <RadioButton
       Margin="0,8,0,0"
       Command="{Binding ViewModel.ChangeAutoPostCommand, Mode=OneWay}"
       CommandParameter="autopost_false"
-      Content="オフ"
+      Content="{helpers:Loc Key=Settings_Off}"
       GroupName="autopostSelect"
       IsChecked="{Binding ViewModel.AutoPost, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
 
-    <TextBlock Margin="0,12,0,0" Text="アルバムアートワークをポストする" />
+    <TextBlock Margin="0,12,0,0" Text="{helpers:Loc Key=Settings_PostAlbumArtwork}" />
     <RadioButton
       Margin="0,12,0,0"
       Command="{Binding ViewModel.ChangePostAlbumArtworkCommand, Mode=OneWay}"
       CommandParameter="postalbumartwork_true"
-      Content="オン"
+      Content="{helpers:Loc Key=Settings_On}"
       GroupName="postalbumartworkSelect"
       IsChecked="{Binding ViewModel.PostAlbumArtwork, Mode=OneWay}" />
     <RadioButton
       Margin="0,8,0,0"
       Command="{Binding ViewModel.ChangePostAlbumArtworkCommand, Mode=OneWay}"
       CommandParameter="postalbumartwork_false"
-      Content="オフ"
+      Content="{helpers:Loc Key=Settings_Off}"
       GroupName="postalbumartworkSelect"
       IsChecked="{Binding ViewModel.PostAlbumArtwork, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
 
-    <TextBlock Margin="0,12,0,0" Text="投稿後にシェアウィンドウを自動で閉じる" />
+    <TextBlock Margin="0,12,0,0" Text="{helpers:Loc Key=Settings_AutoCloseShareWindow}" />
     <RadioButton
       Margin="0,12,0,0"
       Command="{Binding ViewModel.ChangeAutoCloseShareWindowCommand, Mode=OneWay}"
       CommandParameter="autoclosesharewindow_true"
-      Content="オン"
+      Content="{helpers:Loc Key=Settings_On}"
       GroupName="autoclosesharewindowSelect"
       IsChecked="{Binding ViewModel.AutoCloseShareWindow, Mode=OneWay}" />
     <RadioButton
       Margin="0,8,0,0"
       Command="{Binding ViewModel.ChangeAutoCloseShareWindowCommand, Mode=OneWay}"
       CommandParameter="autoclosesharewindow_false"
-      Content="オフ"
+      Content="{helpers:Loc Key=Settings_Off}"
       GroupName="autoclosesharewindowSelect"
       IsChecked="{Binding ViewModel.AutoCloseShareWindow, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
 
@@ -110,7 +124,7 @@
       Margin="0,24,0,0"
       FontSize="20"
       FontWeight="Medium"
-      Text="About NowPlaying" />
+      Text="{helpers:Loc Key=Settings_About}" />
     <TextBlock Margin="0,12,0,24" Text="{Binding ViewModel.AppVersion, Mode=OneWay}" />
   </StackPanel>
 </Page>

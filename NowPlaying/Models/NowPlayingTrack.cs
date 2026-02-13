@@ -19,6 +19,6 @@ public class NowPlayingTrack
     public bool ShowAlbumLine => !IsEmpty && !string.IsNullOrWhiteSpace(AlbumTitle);
 
     public string DisplayText => IsEmpty
-        ? "再生中の曲がありません"
+        ? NowPlaying.Services.Loc.Get("Track_NoTrack")
         : $"{(string.IsNullOrWhiteSpace(Artist) ? "" : Artist + " - ")}{Title}";
 }

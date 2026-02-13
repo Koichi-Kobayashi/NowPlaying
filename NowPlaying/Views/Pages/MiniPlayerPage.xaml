@@ -178,7 +178,7 @@
         HorizontalAlignment="Left"
         Appearance="Primary"
         Command="{Binding ViewModel.ShareCommand, Mode=OneWay}"
-        Content="Xにシェア"
+        Content="{helpers:Loc Key=Button_ShareToX}"
         Icon="SymbolRegular.ChannelShare24" />
     </StackPanel>
   </Grid>

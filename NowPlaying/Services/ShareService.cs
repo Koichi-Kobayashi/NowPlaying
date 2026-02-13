@@ -184,11 +184,12 @@ public class ShareService
 
     private static string BuildShareText(NowPlayingTrack track)
     {
-        if (track.IsEmpty) return "現在再生中の曲がありません #NowPlaying";
+        if (track.IsEmpty) return NowPlaying.Services.Loc.Get("Share_NoTrack");
         var main = $"Now Playing: {track.Title} - {track.Artist}";
         if (!string.IsNullOrWhiteSpace(track.AlbumTitle))
             main += $" - {track.AlbumTitle}";
-        var timestamp = DateTime.Now.ToString("yyyy/MM/dd HH:mm");
+        var culture = LocalizationService.Instance.CurrentCulture;
+        var timestamp = DateTime.Now.ToString("g", culture);
         return $"{main} #NowPlaying ({timestamp})";
     }
 
