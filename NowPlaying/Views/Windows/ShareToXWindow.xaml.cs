@@ -1,3 +1,4 @@
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Wpf.Ui.Controls;
@@ -29,6 +30,16 @@ public partial class ShareToXWindow : FluentWindow
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         Loaded -= OnLoaded;
+
+        var udf = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "NowPlaying",
+            "WebView2");
+        var env = await Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateAsync(
+            browserExecutableFolder: null,
+            userDataFolder: udf);
+        await WebView.EnsureCoreWebView2Async(env);
+
         WebView.Source = new Uri(_url);
         WebView.NavigationCompleted += OnNavigationCompleted;
     }
