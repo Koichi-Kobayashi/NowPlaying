@@ -153,13 +153,22 @@ public class ShareService
         }
 
         var url = BuildXIntentUrl(track);
+
+        if (_appSettingsService.OpenBrowserOnShareTimeout)
+        {
+            OpenUrlInExternalBrowser(url);
+            _appSettingsService.MarkShareSucceeded();
+            return;
+        }
+
         var hasAlbumArtwork = copiedAlbumArtwork;
         var autoClose = isAutoPost && _appSettingsService.AutoCloseShareWindow;
         var window = new Views.Windows.ShareToXWindow(
             url,
             hasAlbumArtwork,
             autoClose,
-            autoSubmitPost: isAutoPost);
+            autoSubmitPost: isAutoPost,
+            openBrowserOnTimeout: _appSettingsService.OpenBrowserOnShareTimeout);
         window.Closed += (_, _) => _appSettingsService.MarkShareSucceeded();
         window.Show();
     }
@@ -248,7 +257,11 @@ public class ShareService
     public void FallbackToXUrl(NowPlayingTrack track)
     {
         var url = BuildXIntentUrl(track);
+        OpenUrlInExternalBrowser(url);
+    }
 
+    private static void OpenUrlInExternalBrowser(string url)
+    {
         try
         {
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo

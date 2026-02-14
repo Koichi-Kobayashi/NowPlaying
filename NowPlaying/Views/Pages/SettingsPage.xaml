@@ -149,6 +149,22 @@
       GroupName="autoclosesharewindowSelect"
       IsChecked="{Binding ViewModel.AutoCloseShareWindow, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
 
+    <TextBlock Margin="0,12,0,0" Text="{helpers:Loc Key=Settings_OpenBrowserOnShareTimeout}" />
+    <RadioButton
+      Margin="0,12,0,0"
+      Command="{Binding ViewModel.ChangeOpenBrowserOnShareTimeoutCommand, Mode=OneWay}"
+      CommandParameter="openbrowseronsharetimeout_true"
+      Content="{helpers:Loc Key=Settings_On}"
+      GroupName="openbrowseronsharetimeoutSelect"
+      IsChecked="{Binding ViewModel.OpenBrowserOnShareTimeout, Mode=OneWay}" />
+    <RadioButton
+      Margin="0,8,0,0"
+      Command="{Binding ViewModel.ChangeOpenBrowserOnShareTimeoutCommand, Mode=OneWay}"
+      CommandParameter="openbrowseronsharetimeout_false"
+      Content="{helpers:Loc Key=Settings_Off}"
+      GroupName="openbrowseronsharetimeoutSelect"
+      IsChecked="{Binding ViewModel.OpenBrowserOnShareTimeout, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
+
     <TextBlock
       Margin="0,24,0,0"
       FontSize="20"

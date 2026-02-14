@@ -104,6 +104,9 @@
   <data name="Settings_AutoCloseShareWindow" xml:space="preserve">
     <value>投稿後にシェアウィンドウを自動で閉じる</value>
   </data>
+  <data name="Settings_OpenBrowserOnShareTimeout" xml:space="preserve">
+    <value>既定のブラウザーでシェア（タイムアウトする場合はこちらをオンにしてください）</value>
+  </data>
   <data name="Settings_AutoPostDependentHint" xml:space="preserve">
     <value>以下は「自動ポストする」がオンのときのみ有効です。</value>
   </data>

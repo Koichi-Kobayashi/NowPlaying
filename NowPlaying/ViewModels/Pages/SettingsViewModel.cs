@@ -81,6 +81,19 @@ namespace NowPlaying.ViewModels.Pages
             }
         }
 
+        public bool OpenBrowserOnShareTimeout
+        {
+            get => _appSettingsService.OpenBrowserOnShareTimeout;
+            set
+            {
+                if (_appSettingsService.OpenBrowserOnShareTimeout != value)
+                {
+                    _appSettingsService.OpenBrowserOnShareTimeout = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public SettingsViewModel(INavigationWindow navigationWindow, AppSettingsService appSettingsService)
         {
             _navigationWindow = navigationWindow;
@@ -113,6 +126,7 @@ namespace NowPlaying.ViewModels.Pages
             OnPropertyChanged(nameof(PostAlbumArtwork));
             OnPropertyChanged(nameof(CopyAlbumArtworkOnManualPost));
             OnPropertyChanged(nameof(AutoCloseShareWindow));
+            OnPropertyChanged(nameof(OpenBrowserOnShareTimeout));
             _appSettingsService.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName == nameof(AppSettingsService.AutoPost))
@@ -123,6 +137,8 @@ namespace NowPlaying.ViewModels.Pages
                     OnPropertyChanged(nameof(CopyAlbumArtworkOnManualPost));
                 if (e.PropertyName == nameof(AppSettingsService.AutoCloseShareWindow))
                     OnPropertyChanged(nameof(AutoCloseShareWindow));
+                if (e.PropertyName == nameof(AppSettingsService.OpenBrowserOnShareTimeout))
+                    OnPropertyChanged(nameof(OpenBrowserOnShareTimeout));
             };
 
             _isInitialized = true;
@@ -238,6 +254,16 @@ namespace NowPlaying.ViewModels.Pages
                 return;
 
             CopyAlbumArtworkOnManualPost = newCopyAlbumArtworkOnManualPost;
+        }
+
+        [RelayCommand]
+        private void OnChangeOpenBrowserOnShareTimeout(string parameter)
+        {
+            var newOpenBrowserOnShareTimeout = parameter == "openbrowseronsharetimeout_true";
+            if (OpenBrowserOnShareTimeout == newOpenBrowserOnShareTimeout)
+                return;
+
+            OpenBrowserOnShareTimeout = newOpenBrowserOnShareTimeout;
         }
     }
 

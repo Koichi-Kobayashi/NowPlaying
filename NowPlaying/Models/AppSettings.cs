@@ -19,4 +19,7 @@ public class AppSettings
 
     /// <summary>投稿後にシェアウィンドウを自動で閉じるか。デフォルトはオフ。</summary>
     public bool AutoCloseShareWindow { get; set; }
+
+    /// <summary>X共有時にタイムアウトした場合、既定ブラウザーで開くか。デフォルトはオフ。</summary>
+    public bool OpenBrowserOnShareTimeout { get; set; }
 }

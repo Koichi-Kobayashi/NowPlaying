@@ -104,6 +104,9 @@
   <data name="Settings_AutoCloseShareWindow" xml:space="preserve">
     <value>Auto close share window after posting</value>
   </data>
+  <data name="Settings_OpenBrowserOnShareTimeout" xml:space="preserve">
+    <value>Share with default browser (turn this on if sharing times out)</value>
+  </data>
   <data name="Settings_AutoPostDependentHint" xml:space="preserve">
     <value>The following setting is enabled only when Auto post is on.</value>
   </data>
