@@ -73,7 +73,17 @@ public partial class DashboardViewModel : ObservableObject
         CurrentTrack = _nowPlayingService.CurrentTrack;
     }
 
-    [RelayCommand]
+    partial void OnCurrentTrackChanged(NowPlayingTrack value)
+    {
+        ShareCommand.NotifyCanExecuteChanged();
+    }
+
+    private bool CanShare()
+    {
+        return CurrentTrack.IsPlaying;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanShare))]
     private void Share()
     {
         _shareService.ShareViaWebView2(CurrentTrack);
