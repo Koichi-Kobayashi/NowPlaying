@@ -156,7 +156,11 @@ public class ShareService
         var url = BuildXIntentUrl(track);
         var hasAlbumArtwork = postAlbumArtwork && track.AlbumArtwork != null;
         var autoClose = isAutoPost && _appSettingsService.AutoCloseShareWindow;
-        var window = new Views.Windows.ShareToXWindow(url, hasAlbumArtwork, autoClose);
+        var window = new Views.Windows.ShareToXWindow(
+            url,
+            hasAlbumArtwork,
+            autoClose,
+            autoSubmitPost: isAutoPost);
         window.Closed += (_, _) => _appSettingsService.MarkShareSucceeded();
         window.Show();
     }
@@ -197,6 +201,8 @@ public class ShareService
     {
         var text = BuildShareText(track);
         var encoded = Uri.EscapeDataString(text);
-        return $"https://x.com/intent/tweet?text={encoded}";
+        var url = $"https://x.com/intent/tweet?text={encoded}";
+        System.Diagnostics.Debug.WriteLine($"X intent URL: {url}");
+        return url;
     }
 }
