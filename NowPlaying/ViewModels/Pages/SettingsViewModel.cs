@@ -68,6 +68,19 @@ namespace NowPlaying.ViewModels.Pages
             }
         }
 
+        public bool CopyAlbumArtworkOnManualPost
+        {
+            get => _appSettingsService.CopyAlbumArtworkOnManualPost;
+            set
+            {
+                if (_appSettingsService.CopyAlbumArtworkOnManualPost != value)
+                {
+                    _appSettingsService.CopyAlbumArtworkOnManualPost = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public SettingsViewModel(INavigationWindow navigationWindow, AppSettingsService appSettingsService)
         {
             _navigationWindow = navigationWindow;
@@ -98,6 +111,7 @@ namespace NowPlaying.ViewModels.Pages
 
             OnPropertyChanged(nameof(AutoPost));
             OnPropertyChanged(nameof(PostAlbumArtwork));
+            OnPropertyChanged(nameof(CopyAlbumArtworkOnManualPost));
             OnPropertyChanged(nameof(AutoCloseShareWindow));
             _appSettingsService.PropertyChanged += (_, e) =>
             {
@@ -105,6 +119,8 @@ namespace NowPlaying.ViewModels.Pages
                     OnPropertyChanged(nameof(AutoPost));
                 if (e.PropertyName == nameof(AppSettingsService.PostAlbumArtwork))
                     OnPropertyChanged(nameof(PostAlbumArtwork));
+                if (e.PropertyName == nameof(AppSettingsService.CopyAlbumArtworkOnManualPost))
+                    OnPropertyChanged(nameof(CopyAlbumArtworkOnManualPost));
                 if (e.PropertyName == nameof(AppSettingsService.AutoCloseShareWindow))
                     OnPropertyChanged(nameof(AutoCloseShareWindow));
             };
@@ -212,6 +228,16 @@ namespace NowPlaying.ViewModels.Pages
                 return;
 
             AutoCloseShareWindow = newAutoCloseShareWindow;
+        }
+
+        [RelayCommand]
+        private void OnChangeCopyAlbumArtworkOnManualPost(string parameter)
+        {
+            var newCopyAlbumArtworkOnManualPost = parameter == "copyalbumartonmanualpost_true";
+            if (CopyAlbumArtworkOnManualPost == newCopyAlbumArtworkOnManualPost)
+                return;
+
+            CopyAlbumArtworkOnManualPost = newCopyAlbumArtworkOnManualPost;
         }
     }
 

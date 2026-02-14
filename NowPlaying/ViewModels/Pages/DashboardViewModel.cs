@@ -12,6 +12,7 @@ public partial class DashboardViewModel : ObservableObject
     private bool _hasReceivedFirstTrack;
     private string? _lastAutoPostedArtist;
     private string? _lastAutoPostedTitle;
+    private bool _skipNextAutoPostAfterEnable;
 
     [ObservableProperty]
     private NowPlayingTrack _currentTrack = new();
@@ -34,6 +35,14 @@ public partial class DashboardViewModel : ObservableObject
         };
         _nowPlayingService.CurrentTrackChanged += OnCurrentTrackChanged;
         CurrentTrack = _nowPlayingService.CurrentTrack;
+
+        _appSettingsService.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(AppSettingsService.AutoPost) && _appSettingsService.AutoPost)
+            {
+                _skipNextAutoPostAfterEnable = true;
+            }
+        };
     }
 
     private void OnCurrentTrackChanged(object? sender, EventArgs e)
@@ -44,10 +53,20 @@ public partial class DashboardViewModel : ObservableObject
         var track = _nowPlayingService.CurrentTrack;
         if (track.IsEmpty)
             return;
+        if (!track.IsPlaying)
+            return;
 
         if (!_hasReceivedFirstTrack)
         {
             _hasReceivedFirstTrack = true;
+            return;
+        }
+
+        if (_skipNextAutoPostAfterEnable)
+        {
+            _skipNextAutoPostAfterEnable = false;
+            _lastAutoPostedArtist = track.Artist;
+            _lastAutoPostedTitle = track.Title;
             return;
         }
 

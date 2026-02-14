@@ -14,6 +14,9 @@ public class AppSettings
     /// <summary>アルバムアートワークをポストするか。デフォルトはオフ。</summary>
     public bool PostAlbumArtwork { get; set; }
 
+    /// <summary>手動ポスト時にアルバムアートワークをクリップボードへコピーするか。デフォルトはオフ。</summary>
+    public bool CopyAlbumArtworkOnManualPost { get; set; }
+
     /// <summary>投稿後にシェアウィンドウを自動で閉じるか。デフォルトはオフ。</summary>
     public bool AutoCloseShareWindow { get; set; }
 }

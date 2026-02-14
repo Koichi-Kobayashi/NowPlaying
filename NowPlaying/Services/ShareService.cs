@@ -1,8 +1,10 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using System.Windows.Interop;
 using NowPlaying.Models;
 using Windows.ApplicationModel.DataTransfer;
@@ -138,23 +140,20 @@ public class ShareService
     /// <param name="isAutoPost">自動ポストによる呼び出しの場合true。ウィンドウを閉じるのは自動ポスト時のみ。</param>
     public void ShareViaWebView2(NowPlayingTrack track, bool isAutoPost = false)
     {
-        var postAlbumArtwork = _appSettingsService.PostAlbumArtwork;
+        var shouldCopyAlbumArtwork = isAutoPost
+            ? _appSettingsService.PostAlbumArtwork
+            : _appSettingsService.CopyAlbumArtworkOnManualPost;
+
+        var copiedAlbumArtwork = false;
 
         // アルバムアートをクリップボードにコピー（設定がオンの場合のみ）
-        if (postAlbumArtwork && track.AlbumArtwork is BitmapSource bitmap)
+        if (shouldCopyAlbumArtwork)
         {
-            try
-            {
-                System.Windows.Clipboard.SetImage(bitmap);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Clipboard copy error: {ex.Message}");
-            }
+            copiedAlbumArtwork = TryCopyAlbumArtworkToClipboard(track.AlbumArtwork);
         }
 
         var url = BuildXIntentUrl(track);
-        var hasAlbumArtwork = postAlbumArtwork && track.AlbumArtwork != null;
+        var hasAlbumArtwork = copiedAlbumArtwork;
         var autoClose = isAutoPost && _appSettingsService.AutoCloseShareWindow;
         var window = new Views.Windows.ShareToXWindow(
             url,
@@ -163,6 +162,84 @@ public class ShareService
             autoSubmitPost: isAutoPost);
         window.Closed += (_, _) => _appSettingsService.MarkShareSucceeded();
         window.Show();
+    }
+
+    private static bool TryCopyAlbumArtworkToClipboard(ImageSource? albumArtwork)
+    {
+        if (albumArtwork == null)
+            return false;
+
+        var bitmap = NormalizeForClipboard(albumArtwork);
+        if (bitmap == null)
+        {
+            System.Diagnostics.Debug.WriteLine("Clipboard copy skipped: album artwork cannot be converted to BitmapSource.");
+            return false;
+        }
+
+        bool CopyAction()
+        {
+            for (var attempt = 1; attempt <= 4; attempt++)
+            {
+                try
+                {
+                    var dataObject = new DataObject();
+                    dataObject.SetImage(bitmap);
+                    System.Windows.Clipboard.SetDataObject(dataObject, true);
+                    if (System.Windows.Clipboard.ContainsImage())
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Clipboard copy error (attempt {attempt}): {ex.Message}");
+                }
+
+                if (attempt < 4)
+                {
+                    Thread.Sleep(150);
+                }
+            }
+
+            return false;
+        }
+
+        var dispatcher = Application.Current?.Dispatcher;
+        if (dispatcher == null || dispatcher.CheckAccess())
+            return CopyAction();
+
+        return dispatcher.Invoke(CopyAction);
+    }
+
+    private static BitmapSource? NormalizeForClipboard(ImageSource source)
+    {
+        if (source is not BitmapSource bitmapSource)
+            return null;
+
+        try
+        {
+            // クリップボード互換性のため、一度PNGに再エンコードして正規化する。
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+            using var ms = new MemoryStream();
+            encoder.Save(ms);
+            ms.Position = 0;
+
+            var normalized = new BitmapImage();
+            normalized.BeginInit();
+            normalized.CacheOption = BitmapCacheOption.OnLoad;
+            normalized.StreamSource = ms;
+            normalized.EndInit();
+            normalized.Freeze();
+
+            return normalized;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Normalize bitmap error: {ex.Message}");
+            return bitmapSource;
+        }
     }
 
     /// <summary>

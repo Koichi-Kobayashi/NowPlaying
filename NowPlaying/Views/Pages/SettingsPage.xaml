@@ -88,21 +88,50 @@
       GroupName="autopostSelect"
       IsChecked="{Binding ViewModel.AutoPost, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
 
-    <TextBlock Margin="0,12,0,0" Text="{helpers:Loc Key=Settings_PostAlbumArtwork}" />
+    <Border
+      Margin="0,12,0,0"
+      Padding="12,10"
+      CornerRadius="8"
+      Background="{DynamicResource ControlFillColorSecondaryBrush}">
+      <StackPanel>
+        <TextBlock
+          Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+          Text="{helpers:Loc Key=Settings_AutoPostDependentHint}" />
+        <StackPanel Margin="16,6,0,0" IsEnabled="{Binding ViewModel.AutoPost, Mode=OneWay}">
+          <TextBlock Margin="0,4,0,0" Text="{helpers:Loc Key=Settings_PostAlbumArtwork}" />
+          <RadioButton
+            Margin="0,8,0,0"
+            Command="{Binding ViewModel.ChangePostAlbumArtworkCommand, Mode=OneWay}"
+            CommandParameter="postalbumartwork_true"
+            Content="{helpers:Loc Key=Settings_On}"
+            GroupName="postalbumartworkSelect"
+            IsChecked="{Binding ViewModel.PostAlbumArtwork, Mode=OneWay}" />
+          <RadioButton
+            Margin="0,8,0,0"
+            Command="{Binding ViewModel.ChangePostAlbumArtworkCommand, Mode=OneWay}"
+            CommandParameter="postalbumartwork_false"
+            Content="{helpers:Loc Key=Settings_Off}"
+            GroupName="postalbumartworkSelect"
+            IsChecked="{Binding ViewModel.PostAlbumArtwork, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <TextBlock Margin="0,12,0,0" Text="{helpers:Loc Key=Settings_CopyAlbumArtworkOnManualPost}" />
     <RadioButton
       Margin="0,12,0,0"
-      Command="{Binding ViewModel.ChangePostAlbumArtworkCommand, Mode=OneWay}"
-      CommandParameter="postalbumartwork_true"
+      Command="{Binding ViewModel.ChangeCopyAlbumArtworkOnManualPostCommand, Mode=OneWay}"
+      CommandParameter="copyalbumartonmanualpost_true"
       Content="{helpers:Loc Key=Settings_On}"
-      GroupName="postalbumartworkSelect"
-      IsChecked="{Binding ViewModel.PostAlbumArtwork, Mode=OneWay}" />
+      GroupName="copyalbumartworkonmanualpostSelect"
+      IsChecked="{Binding ViewModel.CopyAlbumArtworkOnManualPost, Mode=OneWay}" />
     <RadioButton
       Margin="0,8,0,0"
-      Command="{Binding ViewModel.ChangePostAlbumArtworkCommand, Mode=OneWay}"
-      CommandParameter="postalbumartwork_false"
+      Command="{Binding ViewModel.ChangeCopyAlbumArtworkOnManualPostCommand, Mode=OneWay}"
+      CommandParameter="copyalbumartonmanualpost_false"
       Content="{helpers:Loc Key=Settings_Off}"
-      GroupName="postalbumartworkSelect"
-      IsChecked="{Binding ViewModel.PostAlbumArtwork, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
+      GroupName="copyalbumartworkonmanualpostSelect"
+      IsChecked="{Binding ViewModel.CopyAlbumArtworkOnManualPost, Converter={StaticResource InverseBoolConverter}, Mode=OneWay}" />
 
     <TextBlock Margin="0,12,0,0" Text="{helpers:Loc Key=Settings_AutoCloseShareWindow}" />
     <RadioButton

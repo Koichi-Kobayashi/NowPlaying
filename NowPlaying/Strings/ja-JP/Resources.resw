@@ -45,7 +45,7 @@
     <value>Xでシェア</value>
   </data>
   <data name="Share_AlbumArtHint" xml:space="preserve">
-    <value>アルバムアートがある場合、読み込み完了後に自動で貼り付けられます。手動の場合は Ctrl+V を押してください。</value>
+    <value>アルバムアートを貼り付ける設定がオンの場合、読み込み後に自動で貼り付けます。必要に応じて Ctrl+V でも貼り付けできます。</value>
   </data>
   <data name="Share_NoTrack" xml:space="preserve">
     <value>現在再生中の曲がありません #NowPlaying</value>
@@ -93,13 +93,19 @@
     <value>オフ</value>
   </data>
   <data name="Settings_PostAlbumArtwork" xml:space="preserve">
-    <value>アルバムアートワークをポストする</value>
+    <value>自動ポスト時にアルバムアートワークを貼り付ける</value>
+  </data>
+  <data name="Settings_CopyAlbumArtworkOnManualPost" xml:space="preserve">
+    <value>手動ポスト時にアルバムアートワークをクリップボードにコピーする（貼り付けは Ctrl+V）</value>
   </data>
   <data name="Settings_On" xml:space="preserve">
     <value>オン</value>
   </data>
   <data name="Settings_AutoCloseShareWindow" xml:space="preserve">
     <value>投稿後にシェアウィンドウを自動で閉じる</value>
+  </data>
+  <data name="Settings_AutoPostDependentHint" xml:space="preserve">
+    <value>以下は「自動ポストする」がオンのときのみ有効です。</value>
   </data>
 
   <!-- Settings - General -->

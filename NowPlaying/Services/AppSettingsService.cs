@@ -28,11 +28,15 @@ public partial class AppSettingsService : ObservableObject
     private bool _postAlbumArtwork;
 
     [ObservableProperty]
+    private bool _copyAlbumArtworkOnManualPost;
+
+    [ObservableProperty]
     private bool _autoCloseShareWindow;
 
     partial void OnAutoPostChanged(bool value) => Save();
     partial void OnHasSuccessfullySharedChanged(bool value) => Save();
     partial void OnPostAlbumArtworkChanged(bool value) => Save();
+    partial void OnCopyAlbumArtworkOnManualPostChanged(bool value) => Save();
     partial void OnAutoCloseShareWindowChanged(bool value) => Save();
 
     /// <summary>
@@ -69,6 +73,7 @@ public partial class AppSettingsService : ObservableObject
                 AutoPost = settings.AutoPost;
                 HasSuccessfullyShared = settings.HasSuccessfullyShared;
                 PostAlbumArtwork = settings.PostAlbumArtwork;
+                CopyAlbumArtworkOnManualPost = settings.CopyAlbumArtworkOnManualPost;
                 AutoCloseShareWindow = settings.AutoCloseShareWindow;
             }
         }
@@ -90,6 +95,7 @@ public partial class AppSettingsService : ObservableObject
                 AutoPost = AutoPost,
                 HasSuccessfullyShared = HasSuccessfullyShared,
                 PostAlbumArtwork = PostAlbumArtwork,
+                CopyAlbumArtworkOnManualPost = CopyAlbumArtworkOnManualPost,
                 AutoCloseShareWindow = AutoCloseShareWindow
             };
             var json = JsonSerializer.Serialize(settings, JsonOptions);

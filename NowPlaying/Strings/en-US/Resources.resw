@@ -45,7 +45,7 @@
     <value>Share on X</value>
   </data>
   <data name="Share_AlbumArtHint" xml:space="preserve">
-    <value>Album artwork will be auto-pasted when loaded. For manual paste, press Ctrl+V.</value>
+    <value>If album artwork was copied to the clipboard, it will be auto-pasted when loaded. For manual paste, press Ctrl+V.</value>
   </data>
   <data name="Share_NoTrack" xml:space="preserve">
     <value>No track currently playing #NowPlaying</value>
@@ -93,13 +93,19 @@
     <value>Off</value>
   </data>
   <data name="Settings_PostAlbumArtwork" xml:space="preserve">
-    <value>Post album artwork</value>
+    <value>Paste album artwork on auto post</value>
+  </data>
+  <data name="Settings_CopyAlbumArtworkOnManualPost" xml:space="preserve">
+    <value>Copy album artwork to clipboard on manual post (paste with Ctrl+V)</value>
   </data>
   <data name="Settings_On" xml:space="preserve">
     <value>On</value>
   </data>
   <data name="Settings_AutoCloseShareWindow" xml:space="preserve">
     <value>Auto close share window after posting</value>
+  </data>
+  <data name="Settings_AutoPostDependentHint" xml:space="preserve">
+    <value>The following setting is enabled only when Auto post is on.</value>
   </data>
 
   <!-- Settings - General -->
