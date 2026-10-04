@@ -25,28 +25,42 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <!--  アルバムアートワーク 200×200  -->
-    <Border
+    <!--  アルバムアートワーク: 幅200、画像の縦横比に合わせた高さ  -->
+    <Grid
       Grid.Row="0"
       Grid.Column="0"
       Width="200"
-      Height="200"
+      MaxHeight="200"
+      VerticalAlignment="Center"
       Margin="0,0,16,0"
-      Background="{DynamicResource ControlFillColorDefaultBrush}"
-      CornerRadius="6">
-      <Border.Effect>
-        <DropShadowEffect
-          BlurRadius="8"
-          Direction="270"
-          Opacity="0.25"
-          ShadowDepth="3" />
-      </Border.Effect>
+      UseLayoutRounding="True">
+      <Grid.Style>
+        <Style TargetType="Grid">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding ViewModel.CurrentTrack.AlbumArtwork, Mode=OneWay}" Value="{x:Null}">
+              <Setter Property="Height" Value="200" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Grid.Style>
+      <!-- Keep the shadow off the image so it is rendered directly. -->
+      <Border Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="6">
+        <Border.Effect>
+          <DropShadowEffect
+            BlurRadius="8"
+            Direction="270"
+            Opacity="0.25"
+            ShadowDepth="3" />
+        </Border.Effect>
+      </Border>
       <Grid>
         <Image
-          Width="200"
-          Height="200"
+          MaxWidth="200"
+          MaxHeight="200"
+          RenderOptions.BitmapScalingMode="HighQuality"
           Source="{Binding ViewModel.CurrentTrack.AlbumArtwork, Mode=OneWay}"
-          Stretch="Uniform">
+          Stretch="Uniform"
+          StretchDirection="DownOnly">
           <Image.Style>
             <Style TargetType="Image">
               <Setter Property="Visibility" Value="Visible" />
@@ -67,7 +81,7 @@
           Symbol="ShareAndroid24"
           Visibility="{Binding ViewModel.CurrentTrack.AlbumArtwork, Converter={StaticResource NullToVisibilityConverter}, Mode=OneWay}" />
       </Grid>
-    </Border>
+    </Grid>
 
     <!--  右側: タイトルと曲情報 4段表示  -->
     <StackPanel

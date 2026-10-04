@@ -10,14 +10,18 @@
   Title="Now Playing"
   d:DataContext="{d:DesignInstance local:DashboardPage,
                                    IsDesignTimeCreatable=False}"
-  d:DesignHeight="660"
-  d:DesignWidth="640"
+  d:DesignHeight="960"
+  d:DesignWidth="980"
   ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
   ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
   mc:Ignorable="d">
 
-  <Grid Margin="24" VerticalAlignment="Top">
+  <ScrollViewer
+    helpers:VerticalMouseWheelBehavior.IsEnabled="True"
+    HorizontalScrollBarVisibility="Disabled"
+    VerticalScrollBarVisibility="Auto">
+  <Grid MaxWidth="768" Margin="24" VerticalAlignment="Top">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
@@ -25,26 +29,39 @@
     </Grid.RowDefinitions>
 
     <!--  アルバムアートワーク  -->
-    <Border
+    <Grid
       Grid.Row="0"
-      Width="400"
-      Height="400"
+      MaxWidth="720"
+      MaxHeight="720"
       Margin="0,0,0,24"
-      Background="{DynamicResource ControlFillColorDefaultBrush}"
-      CornerRadius="8">
-      <Border.Effect>
-        <DropShadowEffect
-          BlurRadius="12"
-          Direction="270"
-          Opacity="0.3"
-          ShadowDepth="4" />
-      </Border.Effect>
+      UseLayoutRounding="True">
+      <Grid.Style>
+        <Style TargetType="Grid">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding ViewModel.CurrentTrack.AlbumArtwork, Mode=OneWay}" Value="{x:Null}">
+              <Setter Property="Height" Value="405" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Grid.Style>
+      <!-- Keep the shadow off the image so it is rendered directly. -->
+      <Border Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="8">
+        <Border.Effect>
+          <DropShadowEffect
+            BlurRadius="12"
+            Direction="270"
+            Opacity="0.3"
+            ShadowDepth="4" />
+        </Border.Effect>
+      </Border>
       <Grid>
         <Image
-          Width="400"
-          Height="400"
+          MaxWidth="720"
+          MaxHeight="720"
+          RenderOptions.BitmapScalingMode="HighQuality"
           Source="{Binding ViewModel.CurrentTrack.AlbumArtwork, Mode=OneWay}"
-          Stretch="Uniform">
+          Stretch="Uniform"
+          StretchDirection="DownOnly">
           <Image.Style>
             <Style TargetType="Image">
               <Setter Property="Visibility" Value="Visible" />
@@ -65,7 +82,7 @@
           Symbol="ShareAndroid24"
           Visibility="{Binding ViewModel.CurrentTrack.AlbumArtwork, Converter={StaticResource NullToVisibilityConverter}, Mode=OneWay}" />
       </Grid>
-    </Border>
+    </Grid>
 
     <!--  曲情報  -->
     <StackPanel
@@ -76,7 +93,7 @@
       helpers:MarqueeScrollGroupBehavior.ScrollSpeed="40">
       <ScrollViewer
         x:Name="TitleScroll"
-        MaxWidth="400"
+        MaxWidth="720"
         HorizontalAlignment="Stretch"
         HorizontalScrollBarVisibility="Hidden"
         VerticalScrollBarVisibility="Disabled"
@@ -107,7 +124,7 @@
       </ScrollViewer>
       <ScrollViewer
         x:Name="ArtistScroll"
-        MaxWidth="400"
+        MaxWidth="720"
         Margin="0,4,0,0"
         HorizontalAlignment="Stretch"
         HorizontalScrollBarVisibility="Hidden"
@@ -139,7 +156,7 @@
       </ScrollViewer>
       <ScrollViewer
         x:Name="AlbumScroll"
-        MaxWidth="400"
+        MaxWidth="720"
         Margin="0,4,0,0"
         HorizontalAlignment="Stretch"
         HorizontalScrollBarVisibility="Hidden"
@@ -185,4 +202,5 @@
       Content="{helpers:Loc Key=Button_ShareToX}"
       Icon="SymbolRegular.ChannelShare24" />
   </Grid>
+  </ScrollViewer>
 </Page>

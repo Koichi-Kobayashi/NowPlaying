@@ -15,8 +15,8 @@ namespace NowPlaying.Views.Windows
     {
         private const double MiniWidth = 640;
         private const double MiniHeight = 280;
-        private const double NormalWidth = 640;
-        private const double NormalHeight = 660;
+        private const double NormalWidth = 980;
+        private const double NormalHeight = 960;
         public MainWindowViewModel ViewModel { get; }
 
         private readonly WindowStateService _windowStateService;

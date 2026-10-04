@@ -21,6 +21,10 @@ public partial class NowPlayingService : ObservableObject
     private GlobalSystemMediaTransportControlsSessionManager? _sessionManager;
     private GlobalSystemMediaTransportControlsSession? _currentSession;
     private DispatcherTimer? _pollTimer;
+    private readonly YouTubeArtworkService _youTubeArtworkService = new();
+    private long _updateVersion;
+    private string? _enhancedArtworkKey;
+    private BitmapSource? _enhancedArtwork;
 
     public event EventHandler? CurrentTrackChanged;
 
@@ -67,6 +71,7 @@ public partial class NowPlayingService : ObservableObject
 
     private async Task UpdateFromCurrentSessionAsync()
     {
+        var version = ++_updateVersion;
         try
         {
             if (_currentSession != null)
@@ -84,8 +89,11 @@ public partial class NowPlayingService : ObservableObject
 
             _currentSession.MediaPropertiesChanged += OnMediaPropertiesChanged;
 
-            var props = await _currentSession.TryGetMediaPropertiesAsync();
-            var playbackInfo = _currentSession.GetPlaybackInfo();
+            var session = _currentSession;
+            var props = await session.TryGetMediaPropertiesAsync();
+            if (version != _updateVersion)
+                return;
+            var playbackInfo = session.GetPlaybackInfo();
 
             if (props == null)
             {
@@ -110,6 +118,16 @@ public partial class NowPlayingService : ObservableObject
             var title = props.Title ?? string.Empty;
             var artist = props.Artist ?? string.Empty;
             var albumTitle = props.AlbumTitle ?? string.Empty;
+            if (version != _updateVersion)
+                return;
+            var artworkKey = $"{session.SourceAppUserModelId}\n{title}\n{artist}";
+            if (artworkKey == _enhancedArtworkKey)
+                artwork = _enhancedArtwork ?? artwork;
+            else
+            {
+                _enhancedArtworkKey = artworkKey;
+                _enhancedArtwork = null;
+            }
 
             // 一部のプレイヤーが Artist に「アーティスト — アルバム」形式で渡す場合をパース
             if (string.IsNullOrWhiteSpace(albumTitle) && !string.IsNullOrWhiteSpace(artist))
@@ -122,7 +140,9 @@ public partial class NowPlayingService : ObservableObject
                 }
             }
 
-            CurrentTrack = new NowPlayingTrack
+            if (version != _updateVersion)
+                return;
+            var track = new NowPlayingTrack
             {
                 Title = title,
                 Artist = artist,
@@ -131,13 +151,38 @@ public partial class NowPlayingService : ObservableObject
                 IsPlaying = playbackInfo?.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing
             };
 
+            CurrentTrack = track;
             CurrentTrackChanged?.Invoke(this, EventArgs.Empty);
+            _ = UpgradeYouTubeArtworkAsync(session.SourceAppUserModelId, props.Title ?? string.Empty, props.Artist ?? string.Empty,
+                artworkKey, track, version);
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Update track error: {ex.Message}");
-            CurrentTrack = new NowPlayingTrack();
+            if (version == _updateVersion)
+                CurrentTrack = new NowPlayingTrack();
         }
+    }
+
+    private async Task UpgradeYouTubeArtworkAsync(string sourceAppId, string title, string artist,
+        string artworkKey, NowPlayingTrack track, long version)
+    {
+        var artwork = await _youTubeArtworkService.GetArtworkAsync(sourceAppId, title, artist);
+        if (artwork == null || version != _updateVersion || !ReferenceEquals(CurrentTrack, track))
+            return;
+        if (track.AlbumArtwork is BitmapSource original && original.PixelWidth >= artwork.PixelWidth)
+            return;
+
+        _enhancedArtworkKey = artworkKey;
+        _enhancedArtwork = artwork;
+        CurrentTrack = new NowPlayingTrack
+        {
+            Title = track.Title,
+            Artist = track.Artist,
+            AlbumTitle = track.AlbumTitle,
+            AlbumArtwork = artwork,
+            IsPlaying = track.IsPlaying
+        };
     }
 
     /// <summary>
